@@ -208,7 +208,7 @@ CStdString CScrobbler::GetSubmitInterval()
     return strInterval;
   CStdString strFormat = g_localizeStrings.Get(15209);
   int seconds = m_CurrentTrack.length - m_submissionTimer/2;
-  strInterval.Format(strFormat, std::max(seconds, m_failedHandshakeDelay));
+  strInterval.Format(strFormat, max(seconds, m_failedHandshakeDelay));
   return strInterval;
 }
 
@@ -238,7 +238,7 @@ CStdString CScrobbler::GetSubmitState()
   else
   {
     int seconds = m_CurrentTrack.length - m_submissionTimer/2;
-    strState.Format(strFormat, std::max(0, seconds));
+    strState.Format(strFormat, max(0, seconds));
   }
   return strState;
 }
@@ -421,7 +421,7 @@ bool CScrobbler::DoHandshake(time_t now)
     return true;
     
   m_failedHandshakeDelay = // 60, 120, 240, ... 7200s
-    (m_failedHandshakeDelay) ? std::min(2*m_failedHandshakeDelay, 7200) : 60;
+    (m_failedHandshakeDelay) ? min(2*m_failedHandshakeDelay, 7200) : 60;
   m_lastFailedHandshake = now;
   if (!m_bBanned && !m_bBadAuth)
     CLog::Log(LOGDEBUG, "%s: A hard error has occurred during "\
@@ -557,7 +557,7 @@ bool CScrobbler::DoSubmission()
 
   // Construct submission URL.
   numSubmissions = 
-    std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
+    min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
   if (numSubmissions == 0)
     return true;
   strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());

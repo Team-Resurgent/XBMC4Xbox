@@ -833,7 +833,7 @@ void CAdvancedSettings::SetDebugMode(bool debug)
   }
   else
   {
-    int level = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+    int level = min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
     m_logLevel = level;
     CLog::SetLogLevel(level);
