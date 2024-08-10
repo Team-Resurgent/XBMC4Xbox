@@ -68,7 +68,7 @@ DWORD CResampleDirectSound::AddPackets(unsigned char* data, DWORD len)
 
   // must atleast consume the chunklen we have set
   // caller might be relying on that
-  len = std::min(len, m_dwInputSize);
+  len = min(len, m_dwInputSize);
 
   // loop around, grabbing data from the input buffer and resampling
   // until we fill up this packet and our given chunk len
