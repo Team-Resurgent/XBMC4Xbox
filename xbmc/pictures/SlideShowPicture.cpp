@@ -84,7 +84,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, in
   m_transistionStart.type = transEffect;
   m_transistionStart.start = 0;
   // the +1's make sure it actually occurs
-  float fadeTime = std::min(0.2f*g_guiSettings.GetInt("slideshow.staytime"), 3.0f);
+  float fadeTime = min(0.2f*g_guiSettings.GetInt("slideshow.staytime"), 3.0f);
   m_transistionStart.length = (int)(g_infoManager.GetFPS() * fadeTime); // transition time in frames
   m_transistionEnd.type = transEffect;
   m_transistionEnd.start = m_transistionStart.length + max((int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);

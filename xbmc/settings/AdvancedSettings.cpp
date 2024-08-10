@@ -432,7 +432,7 @@ bool CAdvancedSettings::Load()
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
+    g_advancedSettings.m_logLevel = max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
 
@@ -694,7 +694,7 @@ bool CAdvancedSettings::Load()
   }
 
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
-  m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
+  m_bgInfoLoaderMaxThreads = max(1, m_bgInfoLoaderMaxThreads);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -826,7 +826,7 @@ void CAdvancedSettings::SetDebugMode(bool debug)
 {
   if (debug)
   {
-    int level = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+    int level = max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     m_logLevel = level;
     CLog::SetLogLevel(level);
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);

@@ -124,7 +124,7 @@ int CMusicInfoTagLoaderAAC::ReadADIFDuration(XFILE::CFile& file, int offset)
                  ( (uint32_t)buf[5 + skip] << 11) |
                  ( (uint32_t)buf[6 + skip] << 3) |
                  (((uint32_t)buf[7 + skip] & 0xE0) >> 5);
-      fileLen = std::max((int64_t)0, file.GetLength());
+      fileLen = max((int64_t)0, file.GetLength());
     }
   }
   return (bitrate) ? (int)(((float)fileLen*8.f)/(float)(bitrate)) : 0;

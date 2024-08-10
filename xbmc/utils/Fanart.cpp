@@ -193,7 +193,7 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
     colorsOut.Empty();
     CStdStringArray strColors;
     StringUtils::SplitString(colorsIn, "|", strColors);
-    for (int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
+    for (int i = 0; i < min((int)strColors.size()-1, (int)max_fanart_colors); i++)
     { // split up each color
       CStdStringArray strTriplets;
       StringUtils::SplitString(strColors[i+1], ",", strTriplets);
