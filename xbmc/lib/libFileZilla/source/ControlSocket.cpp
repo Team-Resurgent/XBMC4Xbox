@@ -311,18 +311,6 @@ BOOL CControlSocket::SendCurDir(const CStdString command,CStdString curDir)
 
 BOOL CControlSocket::SendDir(const CStdString command,CStdString curDir,const CStdString prompt)
 {
-  if (1 /*g_settings.m_bFTPSingleCharDrives*/
-    && (curDir.GetLength() >= 2) 
-    && (curDir[0] == '/') && isalpha(curDir[1]) && ((curDir.GetLength() == 2) || (curDir[2] == ':')))
-  {
-    // modified to be consistent with other xbox ftp behavior: drive 
-    // name is a single character without the ':' at the end
-    if (curDir.GetLength() > 3) 
-      curDir = curDir.Left(2).ToUpper() + curDir.Mid(3);
-    else
-      curDir = curDir.Left(2).ToUpper();
-  }
-
   CStdString str;
   str.Format("%s \"%s\"%s", command, curDir, prompt);
 	return Send(str);
@@ -1831,18 +1819,7 @@ void CControlSocket::ParseCommand()
 							pCurrent->pNext=NULL;
 						}
 
-            if (1 /*g_settings.m_bFTPSingleCharDrives*/
-              && (iter->dir.GetLength() == 3) 
-              && isalpha(iter->dir[0]) && (iter->dir[1] == ':') && (iter->dir[2] == '\\'))
-            {
-              // modified to be consistent with other xbox ftp behavior: drive 
-              // name is a single character without the ':' at the end
-              result=iter->dir[0];
-            }
-            else
-            {
 						result=iter->dir;
-            }
 						result+="\r\n";
 
 						strcpy(pCurrent->buffer, result);

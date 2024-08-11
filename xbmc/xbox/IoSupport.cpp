@@ -99,11 +99,8 @@ stDriveMapping driveMapping[] =
 
 
 PVOID CIoSupport::m_rawXferBuffer;
-//PARTITION_TABLE CIoSupport::m_partitionTable[2];
-//bool CIoSupport::m_fPartitionTableIsValid[2];
 
-
-// cDriveLetter e.g. 'D'
+// szDriveName e.g. 'DVD-ROM'
 // szDevice e.g. "Cdrom0" or "Harddisk0\Partition6"
 HRESULT CIoSupport::MapDriveLetter(const char* szDriveName, const char* szDevice)
 {
