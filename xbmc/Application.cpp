@@ -5867,7 +5867,7 @@ bool CApplication::IsCurrentThread() const
 void CApplication::InitDirectoriesXbox()
 {  
   // Set installation path. Use Q as ie. F doesn't exist yet!!!
-  CStdString install_path = "Q:\\";
+  CStdString install_path = "ROOT:\\";
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -5883,10 +5883,10 @@ void CApplication::InitDirectoriesXbox()
   // map our special drives to the correct drive letter
   CSpecialProtocol::SetXBMCPath(install_path);
   CSpecialProtocol::SetHomePath(install_path);
-  CSpecialProtocol::SetTempPath("Z:\\");
+  CSpecialProtocol::SetTempPath("HDD0-Z:\\");
 
   // First profile is always the Master Profile
-  CSpecialProtocol::SetMasterProfilePath("Q:\\UserData");
+  CSpecialProtocol::SetMasterProfilePath("ROOT:\\UserData");
 
   g_settings.LoadProfiles(PROFILES_FILE);
 }

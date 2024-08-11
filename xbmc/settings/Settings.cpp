@@ -108,7 +108,7 @@ void CSettings::Initialize()
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
   // This shouldn't be set here but in CApp::Create!!!!!
-//  m_logFolder = "Q:\\";              // log file location
+//  m_logFolder = "ROOT:\\";              // log file location
   m_logFolder = "";
 
   // defaults for scanning
@@ -265,7 +265,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   char szTemp[1024];
   char *pReplace, *pReplace2;
 
-  CStdString strHomePath = "Q:";
+  CStdString strHomePath = "ROOT:";
   strcpy(szText, strText.c_str());
 
   pReplace = strstr(szText, "$HOME");
@@ -1999,7 +1999,7 @@ CStdString CSettings::GetProfilesThumbFolder() const
 
 CStdString CSettings::GetFFmpegDllFolder() const
 {
-  CStdString folder = "Q:\\system\\players\\dvdplayer\\";
+  CStdString folder = "ROOT:\\system\\players\\dvdplayer\\";
   if (g_guiSettings.GetBool("videoplayer.allcodecs"))
     folder += "full\\";
   return folder;

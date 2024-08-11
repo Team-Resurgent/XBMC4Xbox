@@ -1707,7 +1707,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // new skin choosen...
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
-    CStdString strSkinPath = "Q:\\skin\\" + strSkin;
+    CStdString strSkinPath = "ROOT:\\skin\\" + strSkin;
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();

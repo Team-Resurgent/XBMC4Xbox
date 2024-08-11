@@ -50,7 +50,7 @@ public:
 
 class DllFlacEnc : public DllDynamic, DllFlacEncInterface
 {
-  DECLARE_DLL_WRAPPER(DllFlacEnc, Q:\\system\\players\\paplayer\\libFLAC.dll)
+  DECLARE_DLL_WRAPPER(DllFlacEnc, ROOT:\\system\\players\\paplayer\\libFLAC.dll)
   DEFINE_METHOD0(FLAC__StreamEncoder*, FLAC__stream_encoder_new)
   DEFINE_METHOD2(FLAC__bool, FLAC__stream_encoder_set_verify, (FLAC__StreamEncoder *p1, FLAC__bool p2))
   DEFINE_METHOD2(FLAC__bool, FLAC__stream_encoder_set_compression_level, (FLAC__StreamEncoder *p1, unsigned p2))

@@ -720,7 +720,7 @@ bool CMPlayer::load()
   Unload();
   if (!m_pDLL)
   {
-    m_pDLL = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll", true);
+    m_pDLL = new DllLoader("ROOT:\\system\\players\\mplayer\\mplayer.dll", true);
 
     if (!m_pDLL->Load())
     {

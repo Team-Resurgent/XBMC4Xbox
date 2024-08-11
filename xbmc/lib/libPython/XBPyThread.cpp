@@ -157,10 +157,10 @@ void XBPyThread::Process()
 
   // add on any addon modules the user has installed
   // fetch directory
-  if (XFILE::CDirectory::Exists("Q:\\scripts\\.modules"))
+  if (XFILE::CDirectory::Exists("ROOT:\\scripts\\.modules"))
   {
     CFileItemList items;
-    XFILE::CDirectory::GetDirectory("Q:\\scripts\\.modules", items, "/");
+    XFILE::CDirectory::GetDirectory("ROOT:\\scripts\\.modules", items, "/");
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];

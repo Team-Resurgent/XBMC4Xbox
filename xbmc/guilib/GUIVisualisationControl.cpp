@@ -161,7 +161,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   if (m_currentVis.Equals("None"))
     return;
-  strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
+  strVisz.Format("ROOT:\\visualisations\\%s", m_currentVis.c_str());
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {

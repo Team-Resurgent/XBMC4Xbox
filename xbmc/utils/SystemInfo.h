@@ -123,11 +123,11 @@ class CSysInfo : public CInfoLoader
     signed char byHddTemp;
 
   private:
-    #define XBOX_BIOS_ID_INI_FILE "Q:\\System\\SystemInfo\\BiosIDs.ini"
-    #define XBOX_BIOS_BACKUP_FILE "Q:\\System\\SystemInfo\\BIOSBackup.bin"
-    #define XBOX_EEPROM_BIN_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.bin"
-    #define XBOX_EEPROM_CFG_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.cfg"
-    #define XBOX_XBMC_TXT_INFOFILE "Q:\\System\\SystemInfo\\XBMCSystemInfo.txt"
+    #define XBOX_BIOS_ID_INI_FILE "ROOT:\\system\\SystemInfo\\BiosIDs.ini"
+    #define XBOX_BIOS_BACKUP_FILE "ROOT:\\system\\SystemInfo\\BIOSBackup.bin"
+    #define XBOX_EEPROM_BIN_BACKUP_FILE "ROOT:\\system\\SystemInfo\\EEPROMBackup.bin"
+    #define XBOX_EEPROM_CFG_BACKUP_FILE "ROOT:\\system\\SystemInfo\\EEPROMBackup.cfg"
+    #define XBOX_XBMC_TXT_INFOFILE "ROOT:\\system\\SystemInfo\\XBMCSystemInfo.txt"
     #define SYSINFO_TMP_SIZE 256
     #define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
     #define DEBUG_KEYBOARD

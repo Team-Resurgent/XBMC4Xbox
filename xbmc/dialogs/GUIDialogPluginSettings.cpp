@@ -1051,7 +1051,7 @@ CStdString CGUIDialogPluginSettings::NormalizePath(const char *value) const
   URIUtils::RemoveSlashAtEnd(path);
   // we need to change plugin:// protocol if we are using runscript
   if (m_url.GetProtocol().Equals("plugin") && !normalPath.Left(10).Equals("runplugin("))
-    path.Replace("plugin://", "Q:\\plugins\\");
+    path.Replace("plugin://", "ROOT:\\plugins\\");
   // replace $CWD with the addon's path
   normalPath.Replace("$CWD", path);
   // replace $PROFILE with the profile path of the addon

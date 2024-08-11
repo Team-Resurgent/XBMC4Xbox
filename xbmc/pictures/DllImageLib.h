@@ -93,7 +93,7 @@ public:
 
 class DllImageLib : public DllDynamic, DllImageLibInterface
 {
-  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
+  DECLARE_DLL_WRAPPER(DllImageLib, ROOT:\\system\\ImageLib.dll)
   DEFINE_METHOD1(bool, ReleaseImage, (ImageInfo *p1))
   DEFINE_METHOD4(bool, LoadImage, (const char * p1, unsigned int p2, unsigned int p3, ImageInfo * p4))
   DEFINE_METHOD5(bool, CreateThumbnail, (const char * p1, const char * p2, int p3, int p4, bool p5))

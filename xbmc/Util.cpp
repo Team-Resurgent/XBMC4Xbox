@@ -1398,7 +1398,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   CStdString strBasePath, strFileName;
 
   // We need to check whether we must use forward (ie. special://)
-  // or backslashes (ie. Q:\)
+  // or backslashes (ie. ROOT:\)
   CStdString sep;
   if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\')>=0)
   {
@@ -3920,7 +3920,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
     strcpy(szPath, szNewPath.c_str());
   }
   
-  if (strncmp(szPath, "Q:", 2) == 0)
+  if (strncmp(szPath, "ROOT:", 5) == 0)
   { // may aswell support the virtual drive as well...
     CStdString strPath;
     // home dir is xbe dir
