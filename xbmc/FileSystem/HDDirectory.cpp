@@ -66,7 +66,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     m_isoReader.Reset();
 
     CIoSupport::Dismount("Cdrom0");
-    CIoSupport::RemapDriveLetter('D', "Cdrom0");
+    CIoSupport::RemapDriveLetter("DVD-ROM", "Cdrom0");
   }
 
   CStdString strSearchMask = strRoot;

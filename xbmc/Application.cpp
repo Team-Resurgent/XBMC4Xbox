@@ -482,15 +482,15 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   if (MapDrives)
   {
     // map in default drives
-    CIoSupport::RemapDriveLetter('C',"Harddisk0\\Partition2");
-    CIoSupport::RemapDriveLetter('D',"Cdrom0");
-    CIoSupport::RemapDriveLetter('E',"Harddisk0\\Partition1");
+    CIoSupport::RemapDriveLetter("HDD0-C","Harddisk0\\Partition2");
+    CIoSupport::RemapDriveLetter("DVD-ROM","Cdrom0");
+    CIoSupport::RemapDriveLetter("HDD0-E","Harddisk0\\Partition1");
 
     //Add. also Drive F/G
-    if (CIoSupport::PartitionExists(6)) 
-      CIoSupport::RemapDriveLetter('F',"Harddisk0\\Partition6");
-    if (CIoSupport::PartitionExists(7))
-      CIoSupport::RemapDriveLetter('G',"Harddisk0\\Partition7");
+    if (CIoSupport::PartitionExists(0, 6)) 
+      CIoSupport::RemapDriveLetter("HDD0-F","Harddisk0\\Partition6");
+    if (CIoSupport::PartitionExists(0, 7))
+      CIoSupport::RemapDriveLetter("HDD0-G","Harddisk0\\Partition7");
   }
 #endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
@@ -766,13 +766,19 @@ HRESULT CApplication::Create(HWND hWnd)
   win32_exception::install_handler();
 
   CStdString strExecutablePath;
-  char szDevicePath[MAX_PATH];
 
+  //TODO: Make this a function
+  char szDriveName[1024];
+  char szParttiion[1024];
+  char szDrivePath[1024];
+  char szPath[1024];
   // map Q to home drive of xbe to load the config file
   CUtil::GetHomePath(strExecutablePath);
-  CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
-  strcat(szDevicePath, &strExecutablePath.c_str()[2]);
-  CIoSupport::RemapDriveLetter('Q', szDevicePath);
+  CIoSupport::GetDriveNameFromPath(strExecutablePath.c_str(), szDriveName);
+  CIoSupport::GetPartition(szDriveName, szParttiion);
+  CIoSupport::GetPathFromDevicePath(strExecutablePath.c_str(), szDrivePath);
+  sprintf(szPath, "%s%s", szParttiion, szDrivePath);
+  CIoSupport::RemapDriveLetter("ROOT", szPath);
  
   // Do all the special:// & driveletter mapping & setup profiles
   InitDirectoriesXbox();
@@ -809,9 +815,15 @@ HRESULT CApplication::Create(HWND hWnd)
       strMnt += _P(g_settings.GetUserDataFolder()).substr(2);
     }
 
-    CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-    strcat(szDevicePath, &strMnt.c_str()[2]);
-    CIoSupport::RemapDriveLetter('T', szDevicePath);
+    char szDriveName[1024];
+    char szParttiion[1024];
+    char szDrivePath[1024];
+    char szPath[1024];
+    CIoSupport::GetDriveNameFromPath(strMnt.c_str(), szDriveName);
+    CIoSupport::GetPartition(szDriveName, szParttiion);
+    CIoSupport::GetPathFromDevicePath(strMnt.c_str(), szDrivePath);
+    sprintf(szPath, "%s%s", szParttiion, szDrivePath);
+    CIoSupport::RemapDriveLetter("USER", szPath);
   }
 
   if (m_128MBHack)
@@ -922,46 +934,39 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-  CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
-  CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
+  CIoSupport::RemapDriveLetter("HDD0-C", "Harddisk0\\Partition2");
+  CIoSupport::RemapDriveLetter("HDD0-E", "Harddisk0\\Partition1");
 
   CIoSupport::Dismount("Cdrom0");
-  CIoSupport::RemapDriveLetter('D', "Cdrom0");
+  CIoSupport::RemapDriveLetter("DVD-ROM", "Cdrom0");
 
-  // Attempt to read the LBA48 v3 patch partition table, if kernel supports the command and it exists.
-  CIoSupport::ReadPartitionTable();
-  if (CIoSupport::HasPartitionTable())
-  {
-    // Mount up to Partition15 if they are available.
-    for (int i=EXTEND_PARTITION_BEGIN; i <= (EXTEND_PARTITION_BEGIN+EXTEND_PARTITIONS_LIMIT-1); i++)
-    {
-      char szDevice[32];
-      if (CIoSupport::PartitionExists(i))
-      {
-        char cDriveLetter = 'A' + i - 1;
-        
-        char extendDriveLetter = CIoSupport::GetExtendedPartitionDriveLetter(cDriveLetter-EXTEND_DRIVE_BEGIN);
-        CLog::Log(LOGNOTICE, "  map extended drive %c:", extendDriveLetter);
-		
-        sprintf(szDevice, "Harddisk0\\Partition%u", i);
+  CIoSupport::RemapDriveLetter("HDD0-X", "Harddisk0\\Partition3");
+  CIoSupport::RemapDriveLetter("HDD0-Y", "Harddisk0\\Partition4");
+  CIoSupport::RemapDriveLetter("HDD0-Z", "Harddisk0\\Partition5");
+  CIoSupport::RemapDriveLetter("HDD0-F", "Harddisk0\\Partition6");
+  CIoSupport::RemapDriveLetter("HDD0-G", "Harddisk0\\Partition7");
+  CIoSupport::RemapDriveLetter("HDD0-H", "Harddisk0\\Partition8");
+  CIoSupport::RemapDriveLetter("HDD0-I", "Harddisk0\\Partition9");
+  CIoSupport::RemapDriveLetter("HDD0-J", "Harddisk0\\Partition10");
+  CIoSupport::RemapDriveLetter("HDD0-K", "Harddisk0\\Partition11");
+  CIoSupport::RemapDriveLetter("HDD0-L", "Harddisk0\\Partition12");
+  CIoSupport::RemapDriveLetter("HDD0-M", "Harddisk0\\Partition13");
+  CIoSupport::RemapDriveLetter("HDD0-N", "Harddisk0\\Partition14");
 
-        CIoSupport::RemapDriveLetter(extendDriveLetter, szDevice);
-      }
-    }
-  }
-  else
-  {
-    if (CIoSupport::DriveExists('F'))
-      CIoSupport::RemapDriveLetter('F', "Harddisk0\\Partition6");
-    if (CIoSupport::DriveExists('G'))
-      CIoSupport::RemapDriveLetter('G', "Harddisk0\\Partition7");
-  }
-
-  CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
-  CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
-#ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
-#endif
+  CIoSupport::RemapDriveLetter("HDD1-C", "Harddisk1\\Partition2");
+  CIoSupport::RemapDriveLetter("HDD1-E", "Harddisk1\\Partition1");
+  CIoSupport::RemapDriveLetter("HDD1-X", "Harddisk1\\Partition3");
+  CIoSupport::RemapDriveLetter("HDD1-Y", "Harddisk1\\Partition4");
+  CIoSupport::RemapDriveLetter("HDD1-Z", "Harddisk1\\Partition5");
+  CIoSupport::RemapDriveLetter("HDD1-F", "Harddisk1\\Partition6");
+  CIoSupport::RemapDriveLetter("HDD1-G", "Harddisk1\\Partition7");
+  CIoSupport::RemapDriveLetter("HDD1-H", "Harddisk1\\Partition8");
+  CIoSupport::RemapDriveLetter("HDD1-I", "Harddisk1\\Partition9");
+  CIoSupport::RemapDriveLetter("HDD1-J", "Harddisk1\\Partition10");
+  CIoSupport::RemapDriveLetter("HDD1-K", "Harddisk1\\Partition11");
+  CIoSupport::RemapDriveLetter("HDD1-L", "Harddisk1\\Partition12");
+  CIoSupport::RemapDriveLetter("HDD1-M", "Harddisk1\\Partition13");
+  CIoSupport::RemapDriveLetter("HDD1-N", "Harddisk1\\Partition14");
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -990,13 +995,13 @@ HRESULT CApplication::Create(HWND hWnd)
   bool bNeedReboot = false;
   char temp[1024];
   CIoSupport::GetXbePath(temp);
-  char temp2[1024];
-  char temp3;
-  temp3 = temp[0];
-  CIoSupport::GetPartition(temp3,temp2);
-  CStdString strTemp(temp+2);
+
+  CIoSupport::GetDriveNameFromPath(temp, szDriveName);
+  CIoSupport::GetPartition(szDriveName, szParttiion);
+
+  CStdString strTemp(szParttiion+2);
   int iLastSlash = strTemp.rfind('\\');
-  strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
+  strcat(szParttiion,strTemp.substr(0,iLastSlash).c_str());
   F_VIDEO ForceVideo = VIDEO_NULL;
   F_COUNTRY ForceCountry = COUNTRY_NULL;
 
@@ -1017,13 +1022,15 @@ HRESULT CApplication::Create(HWND hWnd)
       DWORD DWVideo = *(LPDWORD)(&EEPROM.VideoStandard[0]);
       char temp[1024];
       CIoSupport::GetXbePath(temp);
-      char temp2[1024];
-      char temp3;
-      temp3 = temp[0];
-      CIoSupport::GetPartition(temp3,temp2);
-      CStdString strTemp(temp+2);
+
+      char szDriveName[1024];
+      char szParttiion[1024];
+      CIoSupport::GetDriveNameFromPath(temp, szDriveName);
+      CIoSupport::GetPartition(szDriveName, szParttiion);
+
+      CStdString strTemp(szParttiion+2);
       int iLastSlash = strTemp.rfind('\\');
-      strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
+      strcat(szParttiion,strTemp.substr(0,iLastSlash).c_str());
 
       if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution > 5))
       {
@@ -1067,7 +1074,7 @@ HRESULT CApplication::Create(HWND hWnd)
   if (bNeedReboot)
   {
     Destroy();
-    CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
+    CUtil::LaunchXbe(szParttiion,("DVD-ROM:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
   }
 #endif
 
@@ -5756,35 +5763,73 @@ void CApplication::StartFtpEmergencyRecoveryMode()
   pUser->SetUserLimit(0);
   pUser->SetIPLimit(0);
   pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
-  pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  //Add existing extended partitions
-  if (CIoSupport::DriveExists('F')){
-    pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("HDD0-C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("DVD-ROM:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("HDD0-E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("ROOT:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+
+  if (CIoSupport::DriveExists("HDD0-F")){
+    pUser->AddDirectory("HDD0-F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('G')){
-    pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-G")){
+    pUser->AddDirectory("HDD0-G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('R')){
-    pUser->AddDirectory("R:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-H")){
+    pUser->AddDirectory("HDD0-H:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('S')){
-    pUser->AddDirectory("S:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-I")){
+    pUser->AddDirectory("HDD0-I:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('V')){
-    pUser->AddDirectory("V:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-J")){
+    pUser->AddDirectory("HDD0-J:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('W')){
-    pUser->AddDirectory("W:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-K")){
+    pUser->AddDirectory("HDD0-K:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('A')){
-    pUser->AddDirectory("A:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-L")){
+    pUser->AddDirectory("HDD0-L:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
-  if (CIoSupport::DriveExists('B')){
-    pUser->AddDirectory("B:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  if (CIoSupport::DriveExists("HDD0-M")){
+    pUser->AddDirectory("HDD0-M:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
+  if (CIoSupport::DriveExists("HDD0-N")){
+    pUser->AddDirectory("HDD0-N:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+
+  if (CIoSupport::DriveExists("HDD1-C")){
+    pUser->AddDirectory("HDD1-C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-E")){
+    pUser->AddDirectory("HDD1-E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-F")){
+    pUser->AddDirectory("HDD1-F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-G")){
+    pUser->AddDirectory("HDD1-G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-H")){
+    pUser->AddDirectory("HDD1-H:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-I")){
+    pUser->AddDirectory("HDD1-I:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-J")){
+    pUser->AddDirectory("HDD1-J:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-K")){
+    pUser->AddDirectory("HDD1-K:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-L")){
+    pUser->AddDirectory("HDD1-L:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-M")){
+    pUser->AddDirectory("HDD1-M:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists("HDD1-N")){
+    pUser->AddDirectory("HDD1-N:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+
   pUser->CommitChanges();
 #endif
 }

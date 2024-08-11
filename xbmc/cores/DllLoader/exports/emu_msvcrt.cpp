@@ -148,6 +148,7 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
+//TODO: fix this
 bool emu_is_hd(const char* path)
 {
   if (path[0] != 0 && path[1] == ':')

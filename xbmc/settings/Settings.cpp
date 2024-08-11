@@ -161,16 +161,22 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
 #ifdef _XBOX
-  char szDevicePath[1024];
   CStdString strMnt = _P(GetProfileUserDataFolder());
-  if (strMnt.Left(2).Equals("Q:"))
+  if (strMnt.Left(5).Equals("ROOT:"))
   {
     CUtil::GetHomePath(strMnt);
-    strMnt += _P(GetProfileUserDataFolder()).substr(2);
+    strMnt += _P(GetProfileUserDataFolder()).substr(5);
   }
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P', szDevicePath);
+  //TODO: Make this a function
+  char szDriveName[1024];
+  char szParttiion[1024];
+  char szDrivePath[1024];
+  char szPath[1024];
+  CIoSupport::GetDriveNameFromPath(strMnt.c_str(), szDriveName);
+  CIoSupport::GetPartition(szDriveName, szParttiion); 
+  CIoSupport::GetPathFromDevicePath(strMnt.c_str(), szDrivePath);
+  sprintf(szPath, "%s%s", szParttiion, szDrivePath);
+  CIoSupport::RemapDriveLetter("PROFILE", szPath);
 #endif
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
