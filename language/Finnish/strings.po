@@ -7354,8 +7354,8 @@ msgid "New smart playlist..."
 msgstr "Älykäs toistolista..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c asema"
+msgid "%s Drive"
+msgstr "%s asema"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

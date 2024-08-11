@@ -7238,8 +7238,8 @@ msgid "New smart playlist..."
 msgstr "רשימת השמעה חכמה חדשה"
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "כונן %c"
+msgid "%s Drive"
+msgstr "כונן %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

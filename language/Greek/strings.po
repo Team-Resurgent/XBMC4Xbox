@@ -7326,8 +7326,8 @@ msgid "New smart playlist..."
 msgstr "Νέα έξυπνη λίστα αναπ/γής..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c Δίσκος"
+msgid "%s Drive"
+msgstr "%s Δίσκος"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

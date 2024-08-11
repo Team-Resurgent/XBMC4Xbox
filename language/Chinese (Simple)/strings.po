@@ -7214,8 +7214,8 @@ msgid "New smart playlist..."
 msgstr "新的智能播放列表..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c磁盘"
+msgid "%s Drive"
+msgstr "%s磁盘"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

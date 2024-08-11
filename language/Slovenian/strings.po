@@ -7186,8 +7186,8 @@ msgid "New smart playlist..."
 msgstr "Nov pameten seznam predvajanja ..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "Pogon %c"
+msgid "%s Drive"
+msgstr "Pogon %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

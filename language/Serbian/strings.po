@@ -7242,8 +7242,8 @@ msgid "New smart playlist..."
 msgstr "Novi pametni spis. za rep..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c uređaj"
+msgid "%s Drive"
+msgstr "%s uređaj"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

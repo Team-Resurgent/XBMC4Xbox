@@ -7246,8 +7246,8 @@ msgid "New smart playlist..."
 msgstr "Nový chytrý seznam stop..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "Mechanika %c"
+msgid "%s Drive"
+msgstr "Mechanika %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

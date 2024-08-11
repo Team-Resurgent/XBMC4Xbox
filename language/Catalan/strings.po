@@ -7014,8 +7014,8 @@ msgid "New smart playlist..."
 msgstr "Nova llista de reproducció intel·ligent..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c Unitat"
+msgid "%s Drive"
+msgstr "%s Unitat"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

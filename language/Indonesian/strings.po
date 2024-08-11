@@ -7042,8 +7042,8 @@ msgid "New smart playlist..."
 msgstr "Daftar putar cerdas baru"
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c Drive"
+msgid "%s Drive"
+msgstr "%s Drive"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

@@ -7747,7 +7747,7 @@ msgid "New smart playlist..."
 msgstr ""
 
 msgctxt "#21438"
-msgid "%c Drive"
+msgid "%s Drive"
 msgstr ""
 
 msgctxt "#21439"

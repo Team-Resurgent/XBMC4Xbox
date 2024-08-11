@@ -6338,8 +6338,8 @@ msgid "New smart playlist..."
 msgstr "Plejlist Smart Ġdida"
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "Drive %c"
+msgid "%s Drive"
+msgstr "Drive %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

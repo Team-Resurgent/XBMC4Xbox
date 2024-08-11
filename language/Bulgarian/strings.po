@@ -7298,8 +7298,8 @@ msgid "New smart playlist..."
 msgstr "Нов \"умен\" плейлист..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "устройство %c"
+msgid "%s Drive"
+msgstr "устройство %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

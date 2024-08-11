@@ -7150,8 +7150,8 @@ msgid "New smart playlist..."
 msgstr "新規スマートプレイリスト..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c ドライブ"
+msgid "%s Drive"
+msgstr "%s ドライブ"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

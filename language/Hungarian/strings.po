@@ -7238,8 +7238,8 @@ msgid "New smart playlist..."
 msgstr "Új intelligens lejátszáslista..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c Meghajtó"
+msgid "%s Drive"
+msgstr "%s Meghajtó"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
