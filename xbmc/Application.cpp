@@ -1093,7 +1093,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_langInfo.Load(strLangInfoPath);
 
   CStdString strKeyboardLayoutConfigurationPath;
-  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", g_guiSettings.GetString("locale.language"));
+  strKeyboardLayoutConfigurationPath.Format("ROOT:\\language\\%s\\keyboardmap.xml", g_guiSettings.GetString("locale.language"));
   CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
   g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
@@ -1182,7 +1182,7 @@ HRESULT CApplication::Create(HWND hWnd)
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash = new CSplash("ROOT:\\media\\splash.png");
   m_splash->Start();
 
   int iResolution = g_graphicsContext.GetVideoResolution();
@@ -1231,17 +1231,17 @@ HRESULT CApplication::Initialize()
 
   CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
-  CUtil::WipeDir("Z:\\");
-  CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
-  CreateDirectory("Q:\\scripts", NULL);
-  CreateDirectory("Q:\\plugins", NULL);
-  CreateDirectory("Q:\\plugins\\music", NULL);
-  CreateDirectory("Q:\\plugins\\video", NULL);
-  CreateDirectory("Q:\\plugins\\pictures", NULL);
-  CreateDirectory("Q:\\plugins\\programs", NULL);
-  CreateDirectory("Q:\\language", NULL);
-  CreateDirectory("Q:\\visualisations", NULL);
-  CreateDirectory("Q:\\sounds", NULL);
+  CUtil::WipeDir("HDD0-Z:\\");
+  CreateDirectory("HDD0-Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
+  CreateDirectory("ROOT:\\scripts", NULL);
+  CreateDirectory("ROOT:\\plugins", NULL);
+  CreateDirectory("ROOT:\\plugins\\music", NULL);
+  CreateDirectory("ROOT:\\plugins\\video", NULL);
+  CreateDirectory("ROOT:\\plugins\\pictures", NULL);
+  CreateDirectory("ROOT:\\plugins\\programs", NULL);
+  CreateDirectory("ROOT:\\language", NULL);
+  CreateDirectory("ROOT:\\visualisations", NULL);
+  CreateDirectory("ROOT:\\sounds", NULL);
   CreateDirectory(g_settings.GetUserDataFolder()+"\\visualisations",NULL);
 
   // initialize network
@@ -1462,7 +1462,7 @@ void CApplication::StartWebServer()
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("services.webserverport")), "Q:\\web", false);
+    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("services.webserverport")), "ROOT:\\web", false);
     if (m_pWebServer)
     {
       m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
@@ -1906,7 +1906,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_skinReloadTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = "Q:\\skin\\" + strSkin;
+  CStdString strSkinPath = "ROOT:\\skin\\" + strSkin;
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
@@ -5866,7 +5866,7 @@ bool CApplication::IsCurrentThread() const
 
 void CApplication::InitDirectoriesXbox()
 {  
-  // Set installation path. Use Q as ie. F doesn't exist yet!!!
+  // Set installation path. Use ROOT as ie. F doesn't exist yet!!!
   CStdString install_path = "ROOT:\\";
 
   // check logpath

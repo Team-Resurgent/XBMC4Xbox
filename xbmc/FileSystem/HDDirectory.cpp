@@ -167,9 +167,9 @@ bool CHDDirectory::Exists(const char* strPath)
     return false;
   CStdString strReplaced=strPath;
   g_charsetConverter.utf8ToStringCharset(strReplaced);
+  URIUtils::AddSlashAtEnd(strReplaced);
   strReplaced.Replace("/","\\");
   CUtil::GetFatXQualifiedPath(strReplaced);
-  URIUtils::AddSlashAtEnd(strReplaced);
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
