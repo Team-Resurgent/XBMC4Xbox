@@ -640,7 +640,7 @@ bool CURL::IsFullPath(const CStdString &url)
 {
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
   if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
-  if (url.Find(":\\") >= 0) return true; //   HDD-0:\foo\bar\bar.ext
+  if (url.Find(":\\") >= 1) return true; //   HDD0-C:\foo\bar\bar.ext
   return false;
 }
 
