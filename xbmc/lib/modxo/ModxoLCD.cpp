@@ -8,8 +8,6 @@
 #define MODXO_SCROLL_SPEED_IN_MSEC 250
 #define MODXO_LCD_COMMAND_MODE 0x80
 #define MODXO_LCD_DATA_MODE 0x40
-#define MODXO_PROTOCOL_SPI2PAR 0x00
-#define MODXO_PROTOCOL_I2C 0x01
 
 #define MODXO_REGISTER_LCD_DATA_MODE 0x00
 #define MODXO_REGISTER_LCD_DATA_PORT 0xDEA8
@@ -152,7 +150,7 @@ void CModxoLCD::DisplayBuildCustomChars()
 //************************************************************************************************************************
 void CModxoLCD::DisplaySetPos(unsigned char pos, unsigned char line) 
 {
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		DisplayOut(17, MODXO_REGISTER_LCD_DATA_MODE);
 		DisplayOut(pos, MODXO_REGISTER_LCD_DATA_MODE);
@@ -182,7 +180,7 @@ void CModxoLCD::DisplaySetPos(unsigned char pos, unsigned char line)
 //************************************************************************************************************************
 void CModxoLCD::DisplayWriteFixtext(const char *textstring)
 { 
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		unsigned char  c;
 		while (c = *textstring++) {
@@ -209,7 +207,7 @@ void CModxoLCD::DisplayWriteFixtext(const char *textstring)
 
 void CModxoLCD::DisplayWriteString(char *pointer) 
 {
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		/* display a normal 0x00 terminated string on the LCD display */
 		unsigned char c;
@@ -247,7 +245,7 @@ void CModxoLCD::DisplayWriteString(char *pointer)
 //************************************************************************************************************************
 void CModxoLCD::DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) 
 {
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		int i;
 
@@ -289,7 +287,7 @@ void CModxoLCD::DisplaySetBacklight(unsigned char level)
 	if (level<0) level=0;
 	if (level>100) level=100;
 
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		DisplayOut(14, MODXO_REGISTER_LCD_DATA_MODE);
 		DisplayOut(level, MODXO_REGISTER_LCD_DATA_MODE);
@@ -303,7 +301,7 @@ void CModxoLCD::DisplaySetContrast(unsigned char level)
 	if (level<0) level=0;
 	if (level>100) level=100;
 
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		DisplayOut(15, MODXO_REGISTER_LCD_DATA_MODE);
 		DisplayOut(level, MODXO_REGISTER_LCD_DATA_MODE);
@@ -323,7 +321,7 @@ void CModxoLCD::DisplaySetContrast(unsigned char level)
 //************************************************************************************************************************
 void CModxoLCD::DisplayInit()
 {
-	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	if (m_iProtocol == PROTOCOL_SPI2PAR)
 	{
 		//Spi
 		DisplayOut(MODXO_LCD_SPI, MODXO_REGISTER_LCD_COMMAND_MODE); 
