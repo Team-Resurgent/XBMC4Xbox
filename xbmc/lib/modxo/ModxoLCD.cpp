@@ -338,7 +338,7 @@ void CModxoLCD::DisplayInit()
 		// wrap off
 		DisplayOut(24, MODXO_REGISTER_LCD_DATA_MODE);
 
-		lcdSetBacklight(backlight);
+		SetBackLight(m_iBackLight);
 	}
 	else
 	{
