@@ -2728,6 +2728,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\LCDFactory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\lib\modxo\ModxoLCD.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\modxo\ModxoLCD.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\lib\smartXX\smartxxlcd.cpp">
 				</File>
 				<File

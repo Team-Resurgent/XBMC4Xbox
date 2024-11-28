@@ -528,6 +528,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("SmartXX", MODCHIP_SMARTXX);
       pControl->AddLabel("Xenium", MODCHIP_XENIUM);
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
+	  pControl->AddLabel("Modxo", MODCHIP_MODXO);
 	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
       pControl->SetValue(pSettingInt->GetData());
     }
@@ -1190,7 +1191,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") == MODCHIP_XBOX);
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+        if (pControl) pControl->SetEnabled(iModchip == MODCHIP_MODXO || iModchip == MODCHIP_XBOX);
       }
       else 
       { 
@@ -1202,7 +1204,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XBOX);
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+        if (pControl) pControl->SetEnabled(iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX);
       }
       else 
       { 

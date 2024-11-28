@@ -62,7 +62,8 @@
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
 #define MODCHIP_XECUTER3  2
-#define MODCHIP_XBOX      3
+#define MODCHIP_MODXO     3
+#define MODCHIP_XBOX      4
 
 // LED settings
 #define LED_COLOUR_NO_CHANGE 0
