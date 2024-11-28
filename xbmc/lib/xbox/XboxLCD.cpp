@@ -32,7 +32,8 @@ CXboxLCD::CXboxLCD()
   m_iRows    = 4;
   m_iColumns = 20;        // display rows each line
   m_iBackLight=32;
-  m_iContrast=50;     
+  m_iContrast=50;  
+  m_iI2CAddress=0;
 
   if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
   {
@@ -130,7 +131,8 @@ void CXboxLCD::wait_us(unsigned int value)
 //************************************************************************************************************************
 void CXboxLCD::DisplayOut(unsigned char data, unsigned char command) 
 {
-	HalWriteSMBusValue(0x3C << 1, command, FALSE, data);
+	int i2c_addresses[] = { 0x27, 0x3c, 0x3f };
+	HalWriteSMBusValue(i2c_addresses[m_iI2CAddress] << 1, command, FALSE, data);
 }
 
 //************************************************************************************************************************
@@ -309,7 +311,6 @@ void CXboxLCD::Process()
   int iOldLight=-1;
   int iOldContrast=-1;
 
-
   m_iColumns = g_advancedSettings.m_lcdColumns;
   m_iRows    = g_advancedSettings.m_lcdRows;
   m_iRow1adr = g_advancedSettings.m_lcdAddress1;
@@ -318,6 +319,7 @@ void CXboxLCD::Process()
   m_iRow4adr = g_advancedSettings.m_lcdAddress4;
   m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
   m_iContrast = g_guiSettings.GetInt("lcd.contrast");
+  m_iI2CAddress = g_guiSettings.GetInt("lcd.i2caddress");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
   DisplayInit();

@@ -36,6 +36,7 @@ protected:
   unsigned int m_iActualpos;				// actual cursor possition
   int          m_iBackLight;
   int          m_iContrast;
+  int          m_iI2CAddress;
   bool         m_bUpdate[MAX_ROWS];
   CStdString   m_strLine[MAX_ROWS];
   int          m_iPos[MAX_ROWS];
