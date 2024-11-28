@@ -3,6 +3,7 @@
 #include "lib/smartxx/smartxxLCD.h"
 #include "lib/libXenium/XeniumLCD.h"
 #include "lib/x3lcd/x3lcd.h"
+#include "lib/xbox/xboxlcd.h"
 #include "settings/GUISettings.h"
 
 ILCD* g_lcd = NULL;
@@ -26,6 +27,10 @@ ILCD* CLCDFactory::Create()
 
   case MODCHIP_XECUTER3:
     return new CX3LCD();
+    break;
+
+  case MODCHIP_XBOX:
+    return new CXboxLCD();
     break;
 
   }

@@ -528,6 +528,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("SmartXX", MODCHIP_SMARTXX);
       pControl->AddLabel("Xenium", MODCHIP_XENIUM);
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
+	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("harddisk.aamlevel"))
