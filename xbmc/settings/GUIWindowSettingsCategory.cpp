@@ -537,7 +537,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel("0x27", 0);
       pControl->AddLabel("0x3c", 1);
-      pControl->AddLabel("0x3f", 2);
+      pControl->AddLabel("0x3d", 2);
+      pControl->AddLabel("0x3f", 3);
       pControl->SetValue(pSettingInt->GetData());
 	}
     else if (strSetting.Equals("harddisk.aamlevel"))

@@ -131,7 +131,7 @@ void CXboxLCD::wait_us(unsigned int value)
 //************************************************************************************************************************
 void CXboxLCD::DisplayOut(unsigned char data, unsigned char command) 
 {
-	int i2c_addresses[] = { 0x27, 0x3c, 0x3f };
+	int i2c_addresses[] = { 0x27, 0x3c, 0x3d, 0x3f };
 	HalWriteSMBusValue(i2c_addresses[m_iI2CAddress] << 1, command, FALSE, data);
 }
 
