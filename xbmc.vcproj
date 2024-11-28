@@ -2740,6 +2740,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\lib\x3lcd\x3lcd.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\lib\xbox\XboxLCD.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\xbox\XboxLCD.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\lib\libXenium\Xenium.cpp">
 				</File>
 				<File

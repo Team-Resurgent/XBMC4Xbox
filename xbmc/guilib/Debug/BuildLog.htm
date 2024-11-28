@@ -1,0 +1,290 @@
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" content="text/html; charset=Windows-1252">
+</head>
+<body>
+<pre>
+<table width=100% bgcolor=#CFCFE5><tr> <td> <font face=arial size=+3>
+Build Log
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>
+<h3>------- Build started: Project: guilib, Configuration: Debug|Xbox -------
+</h3>
+</pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
+Command Lines
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Creating temporary file "z:\Git\XBMC4Xbox\xbmc\guilib\Debug\BAT000001.bat" with contents
+[
+@echo off
+..\..\update_svn_rev.bat
+if errorlevel 1 goto VCReportError
+goto VCEnd
+:VCReportError
+echo Project : error PRJ0019: A tool returned an error code from "Performing Custom Build Step"
+exit 1
+:VCEnd
+]
+Creating command line "z:\Git\XBMC4Xbox\xbmc\guilib\Debug\BAT000001.bat"
+Creating temporary file "z:\Git\XBMC4Xbox\xbmc\guilib\Debug\RSP000002.rsp" with contents
+[
+/Od /I ".." /I "../lib/freetype/include" /I "C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Include" /I "../lib/boost" /I "../guilib" /I "..\utils" /D "_DEBUG" /D "_XBOX" /D "_LIB" /D "_MBCS" /FD /RTC1 /RTCc /MTd /GS /Gy /arch:SSE /GR /YX"include.h" /Fp"Debug/guilib.pch" /Fo"Debug/" /Fd"Debug/vc70.pdb" /W3 /c /Zi /TP  /EHa
+"c:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbutil.cpp"
+"c:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbresource.cpp"
+"c:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbinput.cpp"
+.\tinyXML\tinyxmlparser.cpp
+.\tinyXML\tinyxmlerror.cpp
+.\tinyXML\tinyxml.cpp
+.\tinyXML\tinystr.cpp
+.\common\XBoxMouse.cpp
+.\common\XBoxKeyboard.cpp
+.\common\Mouse.cpp
+.\common\Keyboard.cpp
+.\XMLUtils.cpp
+.\VisibleEffect.cpp
+.\TextureManager.cpp
+.\TextureBundle.cpp
+.\SkinInfo.cpp
+.\PackedTexture.cpp
+.\LocalizeStrings.cpp
+.\Key.cpp
+.\IWindowManagerCallback.cpp
+.\include.cpp
+.\GUIWrappingListContainer.cpp
+.\GUIWindowManager.cpp
+.\GUIWindow.cpp
+.\GUIVisualisationControl.cpp
+.\GUIVideoControl.cpp
+.\GUIToggleButtonControl.cpp
+.\GUITextureD3D.cpp
+.\GUITexture.cpp
+.\GUITextLayout.cpp
+.\GUITextBox.cpp
+.\GUIStaticItem.cpp
+.\GUIStandardWindow.cpp
+.\GUISpinControlEx.cpp
+.\GUISpinControl.cpp
+.\GUISound.cpp
+.\GUISliderControl.cpp
+.\GUISettingsSliderControl.cpp
+.\GUISelectButtonControl.cpp
+.\GUIScrollBarControl.cpp
+.\GUIRSSControl.cpp
+.\GUIResizeControl.cpp
+.\GUIRadioButtonControl.cpp
+.\GUIProgressControl.cpp
+.\GUIPanelContainer.cpp
+.\GUIMultiSelectText.cpp
+.\GUIMultiImage.cpp
+.\GUIMoverControl.cpp
+.\GUIMessage.cpp
+.\GUIListLabel.cpp
+.\GUIListItemLayout.cpp
+.\GUIListItem.cpp
+.\GUIListGroup.cpp
+.\GUIListContainer.cpp
+.\GUILabelControl.cpp
+.\GUILabel.cpp
+.\GUIInfoTypes.cpp
+.\GUIIncludes.cpp
+.\GUIImage.cpp
+.\GUIFontTTF.cpp
+.\GUIFontManager.cpp
+.\GUIFont.cpp
+.\GUIFixedListContainer.cpp
+.\GUIFadeLabelControl.cpp
+.\GUIEditControl.cpp
+.\GUIDialog.cpp
+.\GUIControlGroupList.cpp
+.\GUIControlGroup.cpp
+.\GUIControlFactory.cpp
+.\GUIControl.cpp
+.\GUIColorManager.cpp
+.\GUICheckMarkControl.cpp
+.\GUIButtonScroller.cpp
+.\GUIButtonControl.cpp
+.\GUIBorderedImage.cpp
+.\GUIBaseContainer.cpp
+.\GUIAudioManager.cpp
+.\GUIAction.cpp
+.\GraphicContext.cpp
+.\AudioContext.cpp
+.\AnimatedGif.cpp
+]
+Creating command line "cl.exe @z:\Git\XBMC4Xbox\xbmc\guilib\Debug\RSP000002.rsp /nologo"
+Creating temporary file "z:\Git\XBMC4Xbox\xbmc\guilib\Debug\RSP000003.rsp" with contents
+[
+/OUT:"Debug/guilib.lib" /NOLOGO
+.\Debug\AnimatedGif.obj
+.\Debug\AudioContext.obj
+.\Debug\GraphicContext.obj
+.\Debug\GUIAction.obj
+.\Debug\GUIAudioManager.obj
+.\Debug\GUIBaseContainer.obj
+.\Debug\GUIBorderedImage.obj
+.\Debug\GUIButtonControl.obj
+.\Debug\GUIButtonScroller.obj
+.\Debug\GUICheckMarkControl.obj
+.\Debug\GUIColorManager.obj
+.\Debug\GUIControl.obj
+.\Debug\GUIControlFactory.obj
+.\Debug\GUIControlGroup.obj
+.\Debug\GUIControlGroupList.obj
+.\Debug\GUIDialog.obj
+.\Debug\GUIEditControl.obj
+.\Debug\GUIFadeLabelControl.obj
+.\Debug\GUIFixedListContainer.obj
+.\Debug\GUIFont.obj
+.\Debug\GUIFontManager.obj
+.\Debug\GUIFontTTF.obj
+.\Debug\GUIImage.obj
+.\Debug\GUIIncludes.obj
+.\Debug\GUIInfoTypes.obj
+.\Debug\GUILabel.obj
+.\Debug\GUILabelControl.obj
+.\Debug\GUIListContainer.obj
+.\Debug\GUIListGroup.obj
+.\Debug\GUIListItem.obj
+.\Debug\GUIListItemLayout.obj
+.\Debug\GUIListLabel.obj
+.\Debug\GUIMessage.obj
+.\Debug\GUIMoverControl.obj
+.\Debug\GUIMultiImage.obj
+.\Debug\GUIMultiSelectText.obj
+.\Debug\GUIPanelContainer.obj
+.\Debug\GUIProgressControl.obj
+.\Debug\GUIRadioButtonControl.obj
+.\Debug\GUIResizeControl.obj
+.\Debug\GUIRSSControl.obj
+.\Debug\GUIScrollBarControl.obj
+.\Debug\GUISelectButtonControl.obj
+.\Debug\GUISettingsSliderControl.obj
+.\Debug\GUISliderControl.obj
+.\Debug\GUISound.obj
+.\Debug\GUISpinControl.obj
+.\Debug\GUISpinControlEx.obj
+.\Debug\GUIStandardWindow.obj
+.\Debug\GUIStaticItem.obj
+.\Debug\GUITextBox.obj
+.\Debug\GUITextLayout.obj
+.\Debug\GUITexture.obj
+.\Debug\GUITextureD3D.obj
+.\Debug\GUIToggleButtonControl.obj
+.\Debug\GUIVideoControl.obj
+.\Debug\GUIVisualisationControl.obj
+.\Debug\GUIWindow.obj
+.\Debug\GUIWindowManager.obj
+.\Debug\GUIWrappingListContainer.obj
+.\Debug\include.obj
+.\Debug\IWindowManagerCallback.obj
+.\Debug\Key.obj
+.\Debug\LocalizeStrings.obj
+.\Debug\PackedTexture.obj
+.\Debug\SkinInfo.obj
+.\Debug\TextureBundle.obj
+.\Debug\TextureManager.obj
+.\Debug\VisibleEffect.obj
+.\Debug\XMLUtils.obj
+.\Debug\Keyboard.obj
+.\Debug\Mouse.obj
+.\Debug\XBoxKeyboard.obj
+.\Debug\XBoxMouse.obj
+.\Debug\tinystr.obj
+.\Debug\tinyxml.obj
+.\Debug\tinyxmlerror.obj
+.\Debug\tinyxmlparser.obj
+.\Debug\xbinput.obj
+.\Debug\xbresource.obj
+.\Debug\xbutil.obj
+]
+Creating command line "lib.exe @z:\Git\XBMC4Xbox\xbmc\guilib\Debug\RSP000003.rsp"
+</pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
+Output Window
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Performing Custom Build Step
+Generating SVN revision header from SVN repo
+Compiling...
+xbutil.cpp
+xbresource.cpp
+xbinput.cpp
+tinyxmlparser.cpp
+tinyxmlerror.cpp
+tinyxml.cpp
+tinystr.cpp
+XBoxMouse.cpp
+XBoxKeyboard.cpp
+Mouse.cpp
+Keyboard.cpp
+XMLUtils.cpp
+VisibleEffect.cpp
+TextureManager.cpp
+TextureBundle.cpp
+SkinInfo.cpp
+PackedTexture.cpp
+LocalizeStrings.cpp
+Key.cpp
+IWindowManagerCallback.cpp
+include.cpp
+GUIWrappingListContainer.cpp
+GUIWindowManager.cpp
+GUIWindow.cpp
+GUIVisualisationControl.cpp
+GUIVideoControl.cpp
+GUIToggleButtonControl.cpp
+GUITextureD3D.cpp
+GUITexture.cpp
+GUITextLayout.cpp
+GUITextBox.cpp
+GUIStaticItem.cpp
+GUIStandardWindow.cpp
+GUISpinControlEx.cpp
+GUISpinControl.cpp
+GUISound.cpp
+GUISliderControl.cpp
+GUISettingsSliderControl.cpp
+GUISelectButtonControl.cpp
+GUIScrollBarControl.cpp
+GUIRSSControl.cpp
+GUIResizeControl.cpp
+GUIRadioButtonControl.cpp
+GUIProgressControl.cpp
+GUIPanelContainer.cpp
+GUIMultiSelectText.cpp
+GUIMultiImage.cpp
+GUIMoverControl.cpp
+GUIMessage.cpp
+GUIListLabel.cpp
+GUIListItemLayout.cpp
+GUIListItem.cpp
+GUIListGroup.cpp
+GUIListContainer.cpp
+GUILabelControl.cpp
+GUILabel.cpp
+GUIInfoTypes.cpp
+GUIIncludes.cpp
+GUIImage.cpp
+GUIFontTTF.cpp
+GUIFontManager.cpp
+GUIFont.cpp
+GUIFixedListContainer.cpp
+GUIFadeLabelControl.cpp
+GUIEditControl.cpp
+GUIDialog.cpp
+GUIControlGroupList.cpp
+GUIControlGroup.cpp
+GUIControlFactory.cpp
+GUIControl.cpp
+GUIColorManager.cpp
+GUICheckMarkControl.cpp
+GUIButtonScroller.cpp
+GUIButtonControl.cpp
+GUIBorderedImage.cpp
+GUIBaseContainer.cpp
+GUIAudioManager.cpp
+GUIAction.cpp
+GraphicContext.cpp
+AudioContext.cpp
+AnimatedGif.cpp
+Creating library...
+</pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
+Results
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>
+Build log was saved at "file://z:\Git\XBMC4Xbox\xbmc\guilib\Debug\BuildLog.htm"
+guilib - 0 error(s), 0 warning(s)</pre></table><table   width=100% height=20 bgcolor=#CFCFE5><tr><td><font face=arial size=+2>
+</font></table></body></html>
