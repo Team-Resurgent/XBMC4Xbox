@@ -532,6 +532,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
 	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
       pControl->SetValue(pSettingInt->GetData());
     }
+	else if (strSetting.Equals("lcd.protocol"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel("SPI", 0);
+      pControl->AddLabel("I2C", 1);
+      pControl->SetValue(pSettingInt->GetData());
+	}
 	else if (strSetting.Equals("lcd.i2caddress"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1186,13 +1194,27 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
+	else if (strSetting.Equals("lcd.protocol"))
+    {
+	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+      {
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+        if (pControl) pControl->SetEnabled(iModchip == MODCHIP_MODXO);
+      }
+      else 
+      { 
+        if (pControl) pControl->SetEnabled(false); 
+      }
+    }
 	else if (strSetting.Equals("lcd.i2caddress"))
     {
 	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-        if (pControl) pControl->SetEnabled(iModchip == MODCHIP_MODXO || iModchip == MODCHIP_XBOX);
+		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
+        if (pControl) pControl->SetEnabled((iProtocol == 1 && iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
       }
       else 
       { 
@@ -1515,7 +1537,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.i2caddress"))
+  else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.i2caddress") || strSetting.Equals("lcd.protocol"))
   {
     g_lcd->Stop();
     CLCDFactory factory;
