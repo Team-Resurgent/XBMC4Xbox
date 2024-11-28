@@ -65,6 +65,9 @@
 #define MODCHIP_MODXO     3
 #define MODCHIP_XBOX      4
 
+#define PROTOCOL_SPI2PAR  0
+#define PROTOCOL_I2C      1
+
 // LED settings
 #define LED_COLOUR_NO_CHANGE 0
 #define LED_COLOUR_GREEN   1

@@ -536,7 +536,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("SPI", 0);
+      pControl->AddLabel("SPI2PAR", 0);
       pControl->AddLabel("I2C", 1);
       pControl->SetValue(pSettingInt->GetData());
 	}
@@ -1214,7 +1214,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
 		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
-        if (pControl) pControl->SetEnabled((iProtocol == 1 && iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
+        if (pControl) pControl->SetEnabled((iProtocol == PROTOCOL_SPI2PAR && iModchip == MODCHIP_MODXO) || (iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX));
       }
       else 
       { 
@@ -1227,7 +1227,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-        if (pControl) pControl->SetEnabled(iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX);
+		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
+        if (pControl) pControl->SetEnabled((iModchip == MODCHIP_MODXO && iProtocol == 0) || (iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX));
       }
       else 
       { 

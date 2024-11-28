@@ -8,6 +8,8 @@
 #define MODXO_SCROLL_SPEED_IN_MSEC 250
 #define MODXO_LCD_COMMAND_MODE 0x80
 #define MODXO_LCD_DATA_MODE 0x40
+#define MODXO_PROTOCOL_SPI2PAR 0x00
+#define MODXO_PROTOCOL_I2C 0x01
 
 #define MODXO_REGISTER_LCD_DATA_MODE 0x00
 #define MODXO_REGISTER_LCD_DATA_PORT 0xDEA8
@@ -26,7 +28,8 @@ CModxoLCD::CModxoLCD()
   m_iRows    = 4;
   m_iColumns = 20;        // display rows each line
   m_iBackLight=32;
-  m_iContrast=50;  
+  m_iContrast=50; 
+  m_iProtocol=0;
   m_iI2CAddress=0;
 
   if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
@@ -149,18 +152,27 @@ void CModxoLCD::DisplayBuildCustomChars()
 //************************************************************************************************************************
 void CModxoLCD::DisplaySetPos(unsigned char pos, unsigned char line) 
 {
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
-
-	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
 	{
-		int row_offsets[] = { 0x00, 0x20, 0x40, 0x60 };
-		DisplayOut(0x80 | row_offsets[line] | pos, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(17, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(pos, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(line, MODXO_REGISTER_LCD_DATA_MODE);
 	}
 	else
 	{
-		int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
-		DisplayOut(0x80 | row_offsets[line] | pos, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+
+		if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
+		{
+			int row_offsets[] = { 0x00, 0x20, 0x40, 0x60 };
+			DisplayOut(0x80 | row_offsets[line] | pos, MODXO_REGISTER_LCD_DATA_MODE);
+		}
+		else
+		{
+			int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
+			DisplayOut(0x80 | row_offsets[line] | pos, MODXO_REGISTER_LCD_DATA_MODE);
+		}
 	}
 }
 
@@ -170,13 +182,23 @@ void CModxoLCD::DisplaySetPos(unsigned char pos, unsigned char line)
 //************************************************************************************************************************
 void CModxoLCD::DisplayWriteFixtext(const char *textstring)
 { 
-  DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-  DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		unsigned char  c;
+		while (c = *textstring++) {
+			DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
+		}
+	}
+	else
+	{
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-  unsigned char  c;
-  while (c = *textstring++) {
-    DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
-  }
+		unsigned char  c;
+		while (c = *textstring++) {
+			DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
+		}
+	}
 } 
 
 
@@ -187,19 +209,35 @@ void CModxoLCD::DisplayWriteFixtext(const char *textstring)
 
 void CModxoLCD::DisplayWriteString(char *pointer) 
 {
-  DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-  DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		/* display a normal 0x00 terminated string on the LCD display */
+		unsigned char c;
+		do {
+			c = *pointer;
+			if (c == 0x00)
+			break;
 
-  /* display a normal 0x00 terminated string on the LCD display */
-  unsigned char c;
-  do {
-    c = *pointer;
-    if (c == 0x00)
-      break;
+			DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
+			*pointer++;
+		} while(1);
+	}
+	else
+	{
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-    DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
-    *pointer++;
-    } while(1);
+		/* display a normal 0x00 terminated string on the LCD display */
+		unsigned char c;
+		do {
+			c = *pointer;
+			if (c == 0x00)
+			break;
+
+			DisplayOut(c, MODXO_REGISTER_LCD_DATA_MODE);
+			*pointer++;
+		} while(1);
+	}
 }		
 
 
@@ -209,16 +247,29 @@ void CModxoLCD::DisplayWriteString(char *pointer)
 //************************************************************************************************************************
 void CModxoLCD::DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) 
 {
-  DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-  DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		int i;
 
-  int i;
+		DisplaySetPos(startpos,line);
+		for (i=0;i<lenght; i++){
+			DisplayOut(0x20, MODXO_REGISTER_LCD_DATA_MODE);
+		}
+		DisplaySetPos(startpos,line);
+	}
+	else
+	{
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-  DisplaySetPos(startpos,line);
-  for (i=0;i<lenght; i++){
-    DisplayOut(0x20, MODXO_REGISTER_LCD_DATA_MODE);
-  }
-  DisplaySetPos(startpos,line);
+		int i;
+
+		DisplaySetPos(startpos,line);
+		for (i=0;i<lenght; i++){
+			DisplayOut(0x20, MODXO_REGISTER_LCD_DATA_MODE);
+		}
+		DisplaySetPos(startpos,line);
+	}
 }
 
 
@@ -235,6 +286,14 @@ void CModxoLCD::DisplayProgressBar(unsigned char percent, unsigned char charcnt)
 //************************************************************************************************************************
 void CModxoLCD::DisplaySetBacklight(unsigned char level) 
 {
+	if (level<0) level=0;
+	if (level>100) level=100;
+
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		DisplayOut(14, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(level, MODXO_REGISTER_LCD_DATA_MODE);
+	}
 }
 //************************************************************************************************************************
 //Set Contrast level
@@ -244,99 +303,128 @@ void CModxoLCD::DisplaySetContrast(unsigned char level)
 	if (level<0) level=0;
 	if (level>100) level=100;
 
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(0x2A, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x81, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut((unsigned char)(level * 2.55f), MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE);
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		DisplayOut(15, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(level, MODXO_REGISTER_LCD_DATA_MODE);
+	}
+	else
+	{
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(0x2A, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x81, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut((unsigned char)(level * 2.55f), MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE);
+	}
 }
 //************************************************************************************************************************
 void CModxoLCD::DisplayInit()
 {
-	int i2c_addresses[] = { 0x27, 0x3c, 0x3d, 0x3f };
-	DisplayOut(MODXO_LCD_I2C, MODXO_REGISTER_LCD_COMMAND_MODE); 
-	DisplayOut(i2c_addresses[m_iI2CAddress], MODXO_REGISTER_LCD_COMMAND_MODE); 
-	
-	//Set I2C Command Mode
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+	if (m_iProtocol == MODXO_PROTOCOL_SPI2PAR)
+	{
+		//Spi
+		DisplayOut(MODXO_LCD_SPI, MODXO_REGISTER_LCD_COMMAND_MODE); 
 
-	DisplayOut(0x2a, 0);  // function set (extended command set)
-	DisplayOut(0x71, 0);  // function selection A, disable internal Vdd regualtor
+		// show display
+		DisplayOut(3, MODXO_REGISTER_LCD_DATA_MODE); 
 
-	//Set I2C Data Mode
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+		// hide cursor
+		DisplayOut(4, MODXO_REGISTER_LCD_DATA_MODE);
 
-	DisplayOut(0x00, 0);
+		// scroll off
+		DisplayOut(20, MODXO_REGISTER_LCD_DATA_MODE); 
 
-	//Set I2C Command Mode
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+		// wrap off
+		DisplayOut(24, MODXO_REGISTER_LCD_DATA_MODE);
 
-	DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE);  // function set (fundamental command set)
-	DisplayOut(0x08, MODXO_REGISTER_LCD_DATA_MODE);
+		lcdSetBacklight(backlight);
+	}
+	else
+	{
+		int i2c_addresses[] = { 0x27, 0x3c, 0x3d, 0x3f };
+		DisplayOut(MODXO_LCD_I2C, MODXO_REGISTER_LCD_COMMAND_MODE); 
+		DisplayOut(i2c_addresses[m_iI2CAddress], MODXO_REGISTER_LCD_COMMAND_MODE); 
+		
+		//Set I2C Command Mode
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-	//Set display clock devide ratio, oscillator freq
-	DisplayOut(0x2a, MODXO_REGISTER_LCD_DATA_MODE); //RE=1
-	DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE); //SD=1
-	DisplayOut(0xd5, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x70, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE); //SD=0
-	DisplayOut(0x08 | 0x01, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x06, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x2a, MODXO_REGISTER_LCD_DATA_MODE);  // function set (extended command set)
+		DisplayOut(0x71, MODXO_REGISTER_LCD_DATA_MODE);  // function selection A, disable internal Vdd regualtor
 
-	//CGROM/CGRAM Management
-	DisplayOut(0x72, MODXO_REGISTER_LCD_DATA_MODE);
+		//Set I2C Data Mode
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-	//Set I2C Data Mode
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(0x00, MODXO_REGISTER_LCD_DATA_MODE);
 
-	DisplayOut(0x00, MODXO_REGISTER_LCD_DATA_MODE);    //ROM A
+		//Set I2C Command Mode
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-	//Set I2C Command Mode
-	DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
-	DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
-	
-	//Set OLED Characterization
-	DisplayOut(0x2a, MODXO_REGISTER_LCD_DATA_MODE); //RE=1
-	DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE); //SD=1
-	
-	//Set SEG pins Hardware configuration
-	DisplayOut(0xda, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x10, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE);  // function set (fundamental command set)
+		DisplayOut(0x08, MODXO_REGISTER_LCD_DATA_MODE);
 
-	DisplayOut(0xdc, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x00, MODXO_REGISTER_LCD_DATA_MODE);
+		//Set display clock devide ratio, oscillator freq
+		DisplayOut(0x2a, MODXO_REGISTER_LCD_DATA_MODE); //RE=1
+		DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE); //SD=1
+		DisplayOut(0xd5, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x70, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE); //SD=0
+		DisplayOut(0x08 | 0x01, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x06, MODXO_REGISTER_LCD_DATA_MODE);
 
-	//Set contrast control
-	DisplayOut(0x81, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0x7f, MODXO_REGISTER_LCD_DATA_MODE);
+		//CGROM/CGRAM Management
+		DisplayOut(0x72, MODXO_REGISTER_LCD_DATA_MODE);
 
-	//Set precharge period
-	DisplayOut(0xd9, MODXO_REGISTER_LCD_DATA_MODE);
-	DisplayOut(0xf1, MODXO_REGISTER_LCD_DATA_MODE);
+		//Set I2C Data Mode
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_DATA_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
 
-	//Set VCOMH Deselect level
-	DisplayOut(0xdb, MODXO_REGISTER_LCD_DATA_MODE); 
-	DisplayOut(0x40, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x00, MODXO_REGISTER_LCD_DATA_MODE);    //ROM A
 
-	//Exiting Set OLED Characterization
-	DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE); //SD=0
-	DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE); //RE=0, IS=0
+		//Set I2C Command Mode
+		DisplayOut(MODXO_LCD_SET_I2C_PREFIX, MODXO_REGISTER_LCD_COMMAND_MODE);
+		DisplayOut(MODXO_LCD_COMMAND_MODE, MODXO_REGISTER_LCD_COMMAND_MODE);
+		
+		//Set OLED Characterization
+		DisplayOut(0x2a, MODXO_REGISTER_LCD_DATA_MODE); //RE=1
+		DisplayOut(0x79, MODXO_REGISTER_LCD_DATA_MODE); //SD=1
+		
+		//Set SEG pins Hardware configuration
+		DisplayOut(0xda, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x10, MODXO_REGISTER_LCD_DATA_MODE);
 
-	//Clear display
-	DisplayOut(0x01, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0xdc, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x00, MODXO_REGISTER_LCD_DATA_MODE);
 
-	//Set DDRAM Address
-	DisplayOut(0x80, MODXO_REGISTER_LCD_DATA_MODE);
+		//Set contrast control
+		DisplayOut(0x81, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0x7f, MODXO_REGISTER_LCD_DATA_MODE);
 
-	DisplayOut(0x08 | 0x04, MODXO_REGISTER_LCD_DATA_MODE);
+		//Set precharge period
+		DisplayOut(0xd9, MODXO_REGISTER_LCD_DATA_MODE);
+		DisplayOut(0xf1, MODXO_REGISTER_LCD_DATA_MODE);
 
+		//Set VCOMH Deselect level
+		DisplayOut(0xdb, MODXO_REGISTER_LCD_DATA_MODE); 
+		DisplayOut(0x40, MODXO_REGISTER_LCD_DATA_MODE);
+
+		//Exiting Set OLED Characterization
+		DisplayOut(0x78, MODXO_REGISTER_LCD_DATA_MODE); //SD=0
+		DisplayOut(0x28, MODXO_REGISTER_LCD_DATA_MODE); //RE=0, IS=0
+
+		//Clear display
+		DisplayOut(0x01, MODXO_REGISTER_LCD_DATA_MODE);
+
+		//Set DDRAM Address
+		DisplayOut(0x80, MODXO_REGISTER_LCD_DATA_MODE);
+
+		DisplayOut(0x08 | 0x04, MODXO_REGISTER_LCD_DATA_MODE);
+	}
 	SetContrast(m_iContrast);
 }
 
@@ -354,6 +442,7 @@ void CModxoLCD::Process()
   m_iRow4adr = g_advancedSettings.m_lcdAddress4;
   m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
   m_iContrast = g_guiSettings.GetInt("lcd.contrast");
+  m_iProtocol = g_guiSettings.GetInt("lcd.protocol");
   m_iI2CAddress = g_guiSettings.GetInt("lcd.i2caddress");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
