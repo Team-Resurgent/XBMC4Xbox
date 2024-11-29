@@ -783,7 +783,7 @@ bool URIUtils::GetDrive(const CStdString &path, CStdString& strDrive)
 	    return false;
       }
     }
-	strDrive = path.Left(colonPos);
+	strDrive = path.Left(colonPos + 1);
     return true;
   }
   return false;

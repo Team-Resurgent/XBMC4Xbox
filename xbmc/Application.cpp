@@ -483,14 +483,23 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   {
     // map in default drives
     CIoSupport::RemapDriveLetter("HDD0-C","Harddisk0\\Partition2");
+	CIoSupport::RemapDriveLetter("C","Harddisk0\\Partition2");
     CIoSupport::RemapDriveLetter("DVD-ROM","Cdrom0");
+	CIoSupport::RemapDriveLetter("D","Cdrom0");
     CIoSupport::RemapDriveLetter("HDD0-E","Harddisk0\\Partition1");
+	CIoSupport::RemapDriveLetter("E","Harddisk0\\Partition1");
 
     //Add. also Drive F/G
-    if (CIoSupport::PartitionExists(0, 6)) 
+    if (CIoSupport::PartitionExists(0, 6))
+	{
       CIoSupport::RemapDriveLetter("HDD0-F","Harddisk0\\Partition6");
+	  CIoSupport::RemapDriveLetter("F","Harddisk0\\Partition6");
+	}
     if (CIoSupport::PartitionExists(0, 7))
+	{
       CIoSupport::RemapDriveLetter("HDD0-G","Harddisk0\\Partition7");
+	  CIoSupport::RemapDriveLetter("G","Harddisk0\\Partition7");
+	}
   }
 #endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
@@ -935,16 +944,24 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CIoSupport::RemapDriveLetter("HDD0-C", "Harddisk0\\Partition2");
+  CIoSupport::RemapDriveLetter("C", "Harddisk0\\Partition2");
   CIoSupport::RemapDriveLetter("HDD0-E", "Harddisk0\\Partition1");
+  CIoSupport::RemapDriveLetter("E", "Harddisk0\\Partition1");
 
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter("DVD-ROM", "Cdrom0");
+  CIoSupport::RemapDriveLetter("D", "Cdrom0");
 
   CIoSupport::RemapDriveLetter("HDD0-X", "Harddisk0\\Partition3");
+  CIoSupport::RemapDriveLetter("X", "Harddisk0\\Partition3");
   CIoSupport::RemapDriveLetter("HDD0-Y", "Harddisk0\\Partition4");
+  CIoSupport::RemapDriveLetter("Y", "Harddisk0\\Partition4");
   CIoSupport::RemapDriveLetter("HDD0-Z", "Harddisk0\\Partition5");
+  CIoSupport::RemapDriveLetter("Z", "Harddisk0\\Partition5");
   CIoSupport::RemapDriveLetter("HDD0-F", "Harddisk0\\Partition6");
+  CIoSupport::RemapDriveLetter("F", "Harddisk0\\Partition6");
   CIoSupport::RemapDriveLetter("HDD0-G", "Harddisk0\\Partition7");
+  CIoSupport::RemapDriveLetter("G", "Harddisk0\\Partition7");
   CIoSupport::RemapDriveLetter("HDD0-H", "Harddisk0\\Partition8");
   CIoSupport::RemapDriveLetter("HDD0-I", "Harddisk0\\Partition9");
   CIoSupport::RemapDriveLetter("HDD0-J", "Harddisk0\\Partition10");
