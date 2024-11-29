@@ -545,9 +545,13 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
 void CGUIDialogFileBrowser::GoParentFolder()
 {
   CStdString strPath(m_strParentPath), strOldPath(m_Directory->GetPath());
-  if (strPath.size() == 2)
-    if (strPath[1] == ':')
+  if (strPath.size() > 1)
+  {
+	if (URIUtils::IsDOSPath(strPath) && strPath[strPath.size() - 1] == ':')
+	{
       URIUtils::AddSlashAtEnd(strPath);
+	}
+  }
   Update(strPath);
 }
 

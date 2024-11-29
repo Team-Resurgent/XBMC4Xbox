@@ -730,8 +730,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
   case ACTION_MOVE:
     {
       CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", strFile.c_str(), strDestFile.c_str());
-
-      if (strFile[1] == ':' && strFile[0] == strDestFile[0])
+      if (URIUtils::CompareDrives(strFile, strDestFile))
       {
         // quick move on same drive
         CFile::Rename(strFile, strDestFile);

@@ -49,6 +49,8 @@ public:
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDAV(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
+  static bool GetDrive(const CStdString &path, CStdString& strDrive);
+  static bool CompareDrives(const CStdString &path1, const CStdString &path2);
   static bool IsDVD(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);

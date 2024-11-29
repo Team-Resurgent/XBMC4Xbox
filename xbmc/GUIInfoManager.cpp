@@ -2050,9 +2050,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if (it != m_containerMoves.end())
       {
         if (condition > CONTAINER_STATIC) // moving up
-          bReturn = it->second >= max(condition - CONTAINER_STATIC, 1);
+		  bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
         else
-          bReturn = it->second <= min(condition - CONTAINER_STATIC, -1);
+		  bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
       }
     }
   }
@@ -2477,9 +2477,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (it != m_containerMoves.end())
           {
             if (condition > CONTAINER_STATIC) // moving up
-              bReturn = it->second >= max(condition - CONTAINER_STATIC, 1);
+              bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
             else
-              bReturn = it->second <= min(condition - CONTAINER_STATIC, -1);
+              bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
           }
         }
         break;

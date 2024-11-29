@@ -600,7 +600,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 #ifdef _LINUX
       if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
 #else
-      if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+	  if (!(URIUtils::IsDOSPath(strFilename))) //Filename not fully qualified
 #endif
       {
         if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath))
@@ -636,7 +636,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 #ifdef _LINUX
       if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
 #else
-      if (strFilename[1] == ':') // already fully qualified
+	  if (URIUtils::IsDOSPath(strFilename)) // already fully qualified
 #endif
         return;
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
@@ -1400,7 +1400,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   // We need to check whether we must use forward (ie. special://)
   // or backslashes (ie. ROOT:\)
   CStdString sep;
-  if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\')>=0)
+  if (URIUtils::IsDOSPath(strFileNameAndPath) || strFileNameAndPath.Find('\\')>=0)
   {
     strFileNameAndPath.Replace('/', '\\');
     sep="\\";
