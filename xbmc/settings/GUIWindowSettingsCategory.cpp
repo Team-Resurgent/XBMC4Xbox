@@ -528,8 +528,28 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("SmartXX", MODCHIP_SMARTXX);
       pControl->AddLabel("Xenium", MODCHIP_XENIUM);
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
+	  pControl->AddLabel("Modxo", MODCHIP_MODXO);
+	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
       pControl->SetValue(pSettingInt->GetData());
     }
+	else if (strSetting.Equals("lcd.protocol"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel("SPI2PAR", 0);
+      pControl->AddLabel("I2C", 1);
+      pControl->SetValue(pSettingInt->GetData());
+	}
+	else if (strSetting.Equals("lcd.i2caddress"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel("0x27", 0);
+      pControl->AddLabel("0x3c", 1);
+      pControl->AddLabel("0x3d", 2);
+      pControl->AddLabel("0x3f", 3);
+      pControl->SetValue(pSettingInt->GetData());
+	}
     else if (strSetting.Equals("harddisk.aamlevel"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1169,11 +1189,52 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
-    else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
+    else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
+	else if (strSetting.Equals("lcd.protocol"))
+    {
+	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+      {
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+        if (pControl) pControl->SetEnabled(iModchip == MODCHIP_MODXO);
+      }
+      else 
+      { 
+        if (pControl) pControl->SetEnabled(false); 
+      }
+    }
+	else if (strSetting.Equals("lcd.i2caddress"))
+    {
+	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+      {
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
+        if (pControl) pControl->SetEnabled((iProtocol == PROTOCOL_I2C && iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
+      }
+      else 
+      { 
+        if (pControl) pControl->SetEnabled(false); 
+      }
+    }
+    else if (strSetting.Equals("lcd.backlight"))
+    {
+	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+      {
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
+        if (pControl) pControl->SetEnabled((iModchip == MODCHIP_MODXO && iProtocol == PROTOCOL_SPI2PAR) || (iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX));
+      }
+      else 
+      { 
+        if (pControl) pControl->SetEnabled(false); 
+      }
+	}
     else if (strSetting.Equals("lcd.contrast"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1477,7 +1538,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting.Equals("lcd.modchip"))
+  else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.i2caddress") || strSetting.Equals("lcd.protocol"))
   {
     g_lcd->Stop();
     CLCDFactory factory;
