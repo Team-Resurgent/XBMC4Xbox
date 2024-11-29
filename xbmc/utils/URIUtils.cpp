@@ -761,6 +761,11 @@ bool URIUtils::IsDOSPath(const CStdString &path)
 	    return false;
       }
     }
+	CStdString rest = path.substr(colonPos + 1);
+	if (rest.Left(2).Equals("//"))
+	{
+		return false;
+	}
     return true;
   }
   return false;
@@ -792,6 +797,7 @@ bool URIUtils::CompareDrives(const CStdString &path1, const CStdString &path2)
 	{
 		return true;
 	}
+	return false;
 }
 
 void URIUtils::AddSlashAtEnd(CStdString& strFolder)
