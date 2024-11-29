@@ -86,7 +86,7 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   size_t back  = (size_t)(m_cur - m_beg);
   size_t front = (size_t)(m_end - m_cur);
 
-  size_t limit = m_size - min(back, m_size_back) - front;
+  size_t limit = m_size - std::min(back, m_size_back) - front;
   size_t wrap  = m_size - pos;
 
   // limit by max forward size
@@ -124,7 +124,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
 
   size_t pos   = m_cur % m_size;
   size_t front = (size_t)(m_end - m_cur);
-  size_t avail = min(m_size - pos, front);
+  size_t avail = std::min(m_size - pos, front);
 
   if(avail == 0)
   {

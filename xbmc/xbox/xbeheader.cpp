@@ -42,7 +42,7 @@ bool CXBE::ExtractIcon(const CStdString& strFilename, const CStdString& strIcon)
   DWORD dwRead;
   if ( !::ReadFile( (HANDLE)hFile,
                     m_pHeader,
-                    min( m_iHeaderSize,
+                    std::min( m_iHeaderSize,
                          ( int )GetFileSize( (HANDLE)hFile, ( LPDWORD )NULL ) ),
                     &dwRead,
                     NULL ) )
@@ -91,7 +91,7 @@ bool CXBE::ExtractIcon(const CStdString& strFilename, const CStdString& strIcon)
         // Read the image
         if ( ::ReadFile( (HANDLE)hFile,
                          m_pImage,
-                         min( m_iImageSize,
+                         std::min( m_iImageSize,
                               ( int )m_XBEInfo.pSection_Header->sizeof_raw ),
                          &dwRead,
                          NULL ) == ( BOOL )FALSE )
@@ -134,7 +134,7 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
   DWORD dwRead;
   if ( !::ReadFile( (HANDLE)hFile,
     m_pHeader,
-    min( m_iHeaderSize,
+    std::min( m_iHeaderSize,
     ( int )GetFileSize( (HANDLE)hFile, ( LPDWORD )NULL ) ),
     &dwRead,
     NULL ) )

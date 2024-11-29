@@ -118,7 +118,7 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
   bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
   if (bOk)
   {
-    unsigned int chunksize = min(size, m_size - m_readPtr);
+    unsigned int chunksize = std::min(size, m_size - m_readPtr);
     bOk = rBuf.WriteData(&getBuffer()[m_readPtr], chunksize);
     if (bOk && chunksize < size)
       bOk = rBuf.WriteData(&getBuffer()[0], size - chunksize);
@@ -170,7 +170,7 @@ bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
   if (bOk)
   {
     unsigned int readpos = rBuf.getReadPtr();
-    unsigned int chunksize = min(size, rBuf.getSize() - readpos);
+    unsigned int chunksize = std::min(size, rBuf.getSize() - readpos);
     bOk = WriteData(&rBuf.getBuffer()[readpos], chunksize);
     if (bOk && chunksize < size)
       bOk = WriteData(&rBuf.getBuffer()[0], size - chunksize);

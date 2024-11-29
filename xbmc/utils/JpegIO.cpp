@@ -90,7 +90,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
      To minimize reallocation, we double the chunksize each time up to a maxchunksize of 2MB.
      */
     unsigned int filesize = (unsigned int)file.GetLength();
-    unsigned int chunksize = filesize ? (filesize + 1) : max(65536U, (unsigned int)file.GetChunkSize());
+    unsigned int chunksize = filesize ? (filesize + 1) : std::max(65536U, (unsigned int)file.GetChunkSize());
     unsigned int maxchunksize = 2048*1024U; /* max 2MB chunksize */
 
     unsigned int total_read = 0, free_space = 0;
@@ -106,7 +106,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
           return false;
         }
         free_space = chunksize;
-        chunksize = min(chunksize*2, maxchunksize);
+        chunksize = std::min(chunksize*2, maxchunksize);
       }
       unsigned int read = file.Read(m_inputBuff + total_read, free_space);
       free_space -= read;
