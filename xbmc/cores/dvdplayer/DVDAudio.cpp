@@ -276,7 +276,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
+	copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
     if(copied)
     {
       m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
