@@ -463,15 +463,6 @@ bool IsNameUsable(const char *Name)
     if (isIllegalChar == true || Name[i] < 32 || Name[i] > 126) return false;
   }
   return true;
-  /*
-#ifndef _UNIX
-  if (Name[0] && Name[1] && strchr(Name+2,':')!=NULL)
-    return(false);
-#endif
-  if (strlen(Name) < 43) return 1;
-  else return 0;
-  return(*Name!=0 && strpbrk(Name,"?*<>|")==NULL);
-  */
 }
 
 

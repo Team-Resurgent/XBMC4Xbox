@@ -862,16 +862,6 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 		CStdString path = PathPieces.front();
 		PathPieces.pop_front();
 
-#ifdef _XBOX
-	    if (1 /*g_settings.m_bFTPSingleCharDrives*/)
-	    {
-			// modified to be consistent with other xbox ftp behavior: drive 
-			// name is a single character without the ':' at the end
-			if (path.size() == 1)
-				path += ':';
-	    }
-#endif
-
 		for (std::list<CStdString>::iterator iter = PathPieces.begin(); iter!=PathPieces.end(); iter++)
 		{
 			CStdString piece=*iter;
@@ -1116,29 +1106,8 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 				//dir starts with a / - Does that include the driver letter?
 				if (dir.GetLength()<3 || !isalpha(dir[1]) || (dir[2] != ':'))
 				{
-#ifdef _XBOX
-					if (1 /*g_settings.m_bFTPSingleCharDrives*/ &&
-					  (isalpha(dir[1]) && ((dir.GetLength() == 2) || (dir[2] == '/'))))
-					{
-					// modified to be consistent with other xbox ftp behavior: drive 
-					// name is a single character without the ':' at the end
-					// this is the drive letter specified without the ':' character 
-					// at the end - correct it
-					CString drive = dir.substr(0, 2);
-					drive.ToUpper();
-					if (dir.GetLength() > 3)
-					  dir = drive + ":/" + dir.Mid(3);
-					else
-					  dir = drive + ":/";
-					}
-					else
-					{
-#endif
 				  //We were given an absolute path without a drive letter we need to put one in the dir list
 				  piecelist.push_back(currentdir.Mid(1, 2));
-#ifdef _XBOX				  
-					}
-#endif
 				}
 			}
 		}

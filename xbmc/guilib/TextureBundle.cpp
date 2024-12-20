@@ -131,7 +131,8 @@ bool CTextureBundle::OpenBundle()
   m_TimeStamp.dwLowDateTime = m_TimeStamp.dwHighDateTime = 0;
 
 #ifdef _XBOX
-  if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
+  CStdString drive;
+  if (URIUtils::GetDrive(strPath, drive) && (ALIGN % XGetDiskSectorSize(drive.c_str())))
   {
     CLog::Log(LOGWARNING, "Disk sector size is not supported, caching textures.xpr");
 

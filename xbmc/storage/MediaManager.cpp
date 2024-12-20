@@ -26,7 +26,7 @@
 
 using namespace std;
 
-const char MEDIA_SOURCES_XML[] = { "Q:\\system\\mediasources.xml" };
+const char MEDIA_SOURCES_XML[] = { "ROOT:\\system\\mediasources.xml" };
 
 class CMediaManager g_mediaManager;
 
@@ -98,36 +98,59 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
   // Local shares
   CMediaSource share;
-  share.strPath = "C:\\";
-  share.strName.Format(g_localizeStrings.Get(21438),'C');
+  share.strPath = "HDD0-C:\\";
+  share.strName.Format(g_localizeStrings.Get(21438),"HDD0-C");
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
-  share.strPath = "D:\\";
+  share.strPath = "DVD-ROM:\\";
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   localDrives.push_back(share);
-  share.strPath = "E:\\";
+  share.strPath = "HDD0-E:\\";
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  share.strName.Format(g_localizeStrings.Get(21438),'E');
+  share.strName.Format(g_localizeStrings.Get(21438),"HDD0-E");
   localDrives.push_back(share);
-  for (int driveCount=EXTEND_PARTITION_BEGIN;driveCount<=(EXTEND_PARTITION_BEGIN+EXTEND_PARTITIONS_LIMIT-1);driveCount++)
+
+  for (char drive = 'F'; drive<='N'; drive++)
   {
-    if (CIoSupport::DriveExists(CIoSupport::GetExtendedPartitionDriveLetter(driveCount-EXTEND_PARTITION_BEGIN)))
+	char driveName[MAX_PATH] = {"HDD0-?"};
+	driveName[5] = drive;
+    if (CIoSupport::DriveExists(driveName))
     {
       CMediaSource share;
-      share.strPath.Format("%c:\\", CIoSupport::GetExtendedPartitionDriveLetter(driveCount-EXTEND_PARTITION_BEGIN));
-      CLog::Log(LOGNOTICE, "  Local Source Drive %c:", CIoSupport::GetExtendedPartitionDriveLetter(driveCount-EXTEND_PARTITION_BEGIN));
-      share.strName.Format(g_localizeStrings.Get(21438),CIoSupport::GetExtendedPartitionDriveLetter(driveCount-EXTEND_PARTITION_BEGIN));
+      share.strPath.Format("%s:\\", driveName);
+      CLog::Log(LOGNOTICE, "  Local Source Drive %s:", driveName);
+      share.strName.Format(g_localizeStrings.Get(21438), driveName);
       share.m_ignore = true;
       localDrives.push_back(share);
     }
   }
+
+  for (char drive = 'C'; drive<='N'; drive++)
+  {
+	if (drive == 'D')
+	{
+		continue;
+	}
+	char driveName[MAX_PATH] = {"HDD1-?"};
+	driveName[5] = drive;
+    if (CIoSupport::DriveExists(driveName))
+    {
+      CMediaSource share;
+      share.strPath.Format("%s:\\", driveName);
+      CLog::Log(LOGNOTICE, "  Local Source Drive %s:", driveName);
+      share.strName.Format(g_localizeStrings.Get(21438), driveName);
+      share.m_ignore = true;
+      localDrives.push_back(share);
+    }
+  }
+
   if (includeQ)
   {
     CMediaSource share;
-    share.strPath = "Q:\\";
-    share.strName.Format(g_localizeStrings.Get(21438),'Q');
+    share.strPath = "ROOT:\\";
+    share.strName.Format(g_localizeStrings.Get(21438),"ROOT");
     share.m_ignore = true;
     localDrives.push_back(share);
   }

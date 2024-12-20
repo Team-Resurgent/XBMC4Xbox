@@ -41,7 +41,7 @@ TimidityCodec::~TimidityCodec()
 
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_loader = new DllLoader("Q:\\system\\players\\paplayer\\timidity.dll");
+  m_loader = new DllLoader("ROOT:\\system\\players\\paplayer\\timidity.dll");
   if (!m_loader)
     return false;
   if (!m_loader->Load())

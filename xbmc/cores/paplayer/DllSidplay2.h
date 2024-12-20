@@ -37,7 +37,7 @@ public:
 
 class DllSidplay2 : public DllDynamic, DllSidplay2Interface
 {
-  DECLARE_DLL_WRAPPER(DllSidplay2, q:\\system\\players\\paplayer\\libsidplay2.dll)
+  DECLARE_DLL_WRAPPER(DllSidplay2, ROOT:\\system\\players\\paplayer\\libsidplay2.dll)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadSID, (const char* p1))
   DEFINE_METHOD1(void, FreeSID, (int p1))

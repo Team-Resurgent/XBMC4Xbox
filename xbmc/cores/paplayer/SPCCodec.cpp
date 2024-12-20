@@ -52,7 +52,7 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_loader = new DllLoader("Q:\\system\\players\\paplayer\\snesapu.dll");
+  m_loader = new DllLoader("ROOT:\\system\\players\\paplayer\\snesapu.dll");
   if (!m_loader)
   {
     XFILE::CFile::Delete(m_loader_name);

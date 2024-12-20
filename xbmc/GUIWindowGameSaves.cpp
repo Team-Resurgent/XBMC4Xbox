@@ -76,9 +76,10 @@ void CGUIWindowGameSaves::GoParentFolder()
 
   if (iIndex > -1)
   {
-    if (strPath.size() == 2)
-      if (strPath[1] == ':')
+    if (URIUtils::IsDOSPath(strPath) && strPath[strPath.size() - 1] == ':')
+	{
         URIUtils::AddSlashAtEnd(strPath);
+	}
     Update(strPath);
   }
   else

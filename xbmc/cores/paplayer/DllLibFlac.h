@@ -70,7 +70,7 @@ public:
 
 class DllLibFlac : public DllDynamic, DllLibFlacInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibFlac, Q:\\system\\players\\PAPlayer\\libFlac.dll)
+  DECLARE_DLL_WRAPPER(DllLibFlac, ROOT:\\system\\players\\PAPlayer\\libFlac.dll)
   DEFINE_METHOD0(FLAC__StreamDecoder*, FLAC__stream_decoder_new)
   DEFINE_METHOD1(void, FLAC__stream_decoder_delete, (FLAC__StreamDecoder *p1))
   DEFINE_METHOD10(FLAC__StreamDecoderInitStatus, FLAC__stream_decoder_init_stream,

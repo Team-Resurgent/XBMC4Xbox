@@ -1181,7 +1181,7 @@ CStdString CSysInfo::GetMPlayerVersion()
   const char *date = NULL;
   const char *btime = NULL;
 
-  mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
+  mplayerDll = new DllLoader("ROOT:\\system\\players\\mplayer\\mplayer.dll",true);
 
   if( mplayerDll->Load() )
   {

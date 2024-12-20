@@ -1577,6 +1577,10 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr "МOD-чіп"
 
+msgctxt "#472"
+msgid "I2C Address"
+msgstr "I2C Address"
+
 msgctxt "#474"
 msgid "Off"
 msgstr "Вимкн."
@@ -7282,8 +7286,8 @@ msgid "New smart playlist..."
 msgstr "Новий розширений список відтворення"
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "Диск %c"
+msgid "%s Drive"
+msgstr "Диск %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

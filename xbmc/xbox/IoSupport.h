@@ -93,26 +93,21 @@ class CIoSupport
 public:
   static VOID GetXbePath(char* szDest);
 
-  static HRESULT MapDriveLetter  (char cDriveLetter, const char* szDevice);
-  static HRESULT UnmapDriveLetter(char cDriveLetter);
-  static HRESULT RemapDriveLetter(char cDriveLetter, const char* szDevice);
+  static HRESULT MapDriveLetter  (const char* szDriveName, const char* szDevice);
+  static HRESULT UnmapDriveLetter(const char* szDriveName);
+  static HRESULT RemapDriveLetter(const char* szDriveName, const char* szDevice);
 
   static HRESULT Dismount(const char* szDevice);
 
-  static bool DriveExists(char cDrive);
-  static bool PartitionExists(int nPartition);
+  static bool IsDrivePath(const char* szPath);
+  static bool DriveExists(const char* szDriveName);
+  static bool PartitionExists(int nDrive, int nPartition);
 
-  static void GetPartition(char cDriveLetter, char* szPartition);
-  static void GetDrive(const char* szPartition, char* cDriveLetter);
-
-  static bool ReadPartitionTable();
-  static bool HasPartitionTable();
-  static bool ExtendedPartitionMappingExists(char mapLetter); 
-  static INT GetExtendedPartitionPosition(char mapLetter); 
-  static char GetExtendedPartitionDriveLetter(int pos); 
-  static void MapExtendedPartitions();
-
-  static LARGE_INTEGER GetDriveSize();
+  static bool CompareString(const char* value1, const char* value2, bool caseInsensitive);
+  static void GetDriveNameFromPath(const char* szDrivePath, char* szDriveName);
+  static void GetPathFromDevicePath(const char* szDevicePath, char* szPath);
+  static void GetPartition(const char* szDriveName, char* szPartition);
+  static void GetDrive(const char* szPartition, char* szDriveName, int maxDriveNameLen);
 
   static DWORD   GetTrayState();
   static HRESULT EjectTray();
@@ -131,10 +126,10 @@ public:
   static BOOL IsDebug();
   static HRESULT Shutdown();
 private:
-  static unsigned int ReadPartitionTable(PARTITION_TABLE *p_table);
+  //static unsigned int ReadPartitionTable(int nDrive, PARTITION_TABLE *p_table);
   static PVOID m_rawXferBuffer;
-  static PARTITION_TABLE m_partitionTable;
-  static bool m_fPartitionTableIsValid;
+ // static PARTITION_TABLE m_partitionTable[2];
+  //static bool m_fPartitionTableIsValid[2];
 };
 
 #endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)

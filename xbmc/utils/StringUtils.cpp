@@ -301,7 +301,7 @@ void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
   {
-    strLine = strLine.Left(std::max(0, (int)strLine.size() - 1));
+	strLine = strLine.Left(std::max(0, (int)strLine.size() - 1));
   }
 }
 

@@ -1952,9 +1952,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = false;
   }
   else if (condition == SYSTEM_HAS_DRIVE_F)
-    bReturn = CIoSupport::DriveExists('F');
+    bReturn = CIoSupport::DriveExists("HDD0-F");
   else if (condition == SYSTEM_HAS_DRIVE_G)
-    bReturn = CIoSupport::DriveExists('G');
+    bReturn = CIoSupport::DriveExists("HDD0-G");
   else if (condition == SYSTEM_DVDREADY)
     bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
@@ -2050,9 +2050,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if (it != m_containerMoves.end())
       {
         if (condition > CONTAINER_STATIC) // moving up
-          bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
+		  bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
         else
-          bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
+		  bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
       }
     }
   }

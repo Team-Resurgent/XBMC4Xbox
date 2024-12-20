@@ -1553,6 +1553,10 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr "Modchip"
 
+msgctxt "#472"
+msgid "I2C Address"
+msgstr "I2C Address"
+
 msgctxt "#474"
 msgid "Off"
 msgstr "Kapalı"
@@ -7242,8 +7246,8 @@ msgid "New smart playlist..."
 msgstr "Yeni akıllı çalma listesi..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c Sürücüsü"
+msgid "%s Drive"
+msgstr "%s Sürücüsü"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

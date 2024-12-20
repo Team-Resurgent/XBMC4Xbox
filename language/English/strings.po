@@ -1669,7 +1669,11 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr ""
 
-#empty strings from id 472 to 473
+msgctxt "#472"
+msgid "I2C Address"
+msgstr ""
+
+#empty strings from id 473 to 473
 
 msgctxt "#474"
 msgid "Off"
@@ -7747,7 +7751,7 @@ msgid "New smart playlist..."
 msgstr ""
 
 msgctxt "#21438"
-msgid "%c Drive"
+msgid "%s Drive"
 msgstr ""
 
 msgctxt "#21439"

@@ -90,7 +90,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       CStdString strDirectory;
       URIUtils::GetDirectory(strDest,strDirectory);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
-      if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
+	  if (!(URIUtils::IsDOSPath(strDirectory) && strDirectory[strDirectory.size() - 1] == ':'))
       {
         CURL url(strDirectory);
         CStdString pathsep;

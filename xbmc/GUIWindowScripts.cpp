@@ -67,7 +67,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems->GetPath() == "?")
-        m_vecItems->SetPath("Q:\\scripts"); //g_settings.m_szDefaultScripts;
+        m_vecItems->SetPath("ROOT:\\scripts"); //g_settings.m_szDefaultScripts;
 
       return CGUIMediaWindow::OnMessage(message);
     }

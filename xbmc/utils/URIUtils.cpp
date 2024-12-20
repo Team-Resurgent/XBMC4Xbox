@@ -157,7 +157,7 @@ void URIUtils::Split(const CStdString& strFileNameAndPath, CStdString& strPath, 
   {
     char ch = strFileNameAndPath[i];
     // Only break on ':' if it's a drive separator for DOS (ie d:foo)
-    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1)) break;
+    if (ch == '/' || ch == '\\' || ch == ':') break;
     else i--;
   }
   if (i == 0)
@@ -751,10 +751,53 @@ bool URIUtils::IsLastFM(const CStdString& strFile)
 
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
-  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
+  int colonPos = path.Find(':');
+  if (colonPos > 0) 
+  {
+    for (int i = 0; i < colonPos; ++i) 
+	{
+      if (!isalpha(path[i])) 
+      {
+	    return false;
+      }
+    }
+	CStdString rest = path.substr(colonPos + 1);
+	if (rest.Left(2).Equals("//"))
+	{
+		return false;
+	}
     return true;
-
+  }
   return false;
+}
+
+bool URIUtils::GetDrive(const CStdString &path, CStdString& strDrive)
+{
+  int colonPos = path.Find(':');
+  if (colonPos > 0) 
+  {
+    for (int i = 0; i < colonPos; ++i) 
+	{
+      if (!isalpha(path[i])) 
+      {
+	    return false;
+      }
+    }
+	strDrive = path.Left(colonPos + 1);
+    return true;
+  }
+  return false;
+}
+
+bool URIUtils::CompareDrives(const CStdString &path1, const CStdString &path2)
+{
+	CStdString drive1;
+	CStdString drive2;
+	if (GetDrive(path1, drive1) && GetDrive(path2, drive2) && drive1.Equals(drive2))
+	{
+		return true;
+	}
+	return false;
 }
 
 void URIUtils::AddSlashAtEnd(CStdString& strFolder)

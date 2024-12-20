@@ -1565,6 +1565,10 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr "Изме. чип"
 
+msgctxt "#472"
+msgid "I2C Address"
+msgstr "I2C Address"
+
 msgctxt "#474"
 msgid "Off"
 msgstr "Искљ."
@@ -7222,8 +7226,8 @@ msgid "New smart playlist..."
 msgstr "Нови паметни спис. за реп..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c уређај"
+msgid "%s Drive"
+msgstr "%s уређај"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

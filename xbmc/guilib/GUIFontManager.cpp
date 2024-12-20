@@ -116,7 +116,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       // Now try to load it from media\fonts
       if (strFilename[1] != ':')
       {
-        strPath = "Q:\\media\\Fonts\\";
+        strPath = "ROOT:\\media\\Fonts\\";
         strPath += strFilename;
       }
 

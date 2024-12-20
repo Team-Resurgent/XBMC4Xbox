@@ -133,14 +133,15 @@ void CMemoryUnitManager::MountUnits(unsigned long device, bool notify)
   }
 }
 
-bool CMemoryUnitManager::IsDriveValid(char Drive)
+//TODO: change memcard letters to MMU0-7
+bool CMemoryUnitManager::IsDriveValid(const char* Drive)
 {
   for (unsigned int i = 0; i < m_memUnits.size(); i++)
   {
     IDevice *device = m_memUnits[i];
     if (strcmpi(device->GetFileSystem(), "fatx") == 0)
     {
-      if (((CFatXDevice *)device)->GetDrive() == Drive)
+      if (((CFatXDevice *)device)->GetDrive() == Drive[0])
         return true;
     }
   }

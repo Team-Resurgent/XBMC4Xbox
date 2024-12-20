@@ -67,7 +67,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       // We should only continue when the logfolder is set
       if (g_settings.m_logFolder.IsEmpty()) return;
 
-      // g_settings.m_logFolder is initialized in the CSettings constructor to Q:\\
+      // g_settings.m_logFolder is initialized in the CSettings constructor to ROOT:\\
       // and if we are running from DVD, it's changed to T:\\ in CApplication::Create()
       CStdString LogFile;
       URIUtils::AddFileToFolder(g_settings.m_logFolder, "xbmc.log", LogFile);

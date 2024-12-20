@@ -61,7 +61,7 @@ public:
 
 class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
 {
-  DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\PAPlayer\\vorbisfile.dll)
+  DECLARE_DLL_WRAPPER(DllVorbisfile, ROOT:\\system\\players\\PAPlayer\\vorbisfile.dll)
   DEFINE_METHOD1(int, ov_clear, (OggVorbis_File *p1))
   DEFINE_METHOD4(int, ov_open, (FILE *p1,OggVorbis_File *p2,char *p3,long p4))
   DEFINE_METHOD5(int, ov_open_callbacks, (void *p1, OggVorbis_File *p2, char *p3, long p4, ov_callbacks p5))

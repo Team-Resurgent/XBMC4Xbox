@@ -311,18 +311,6 @@ BOOL CControlSocket::SendCurDir(const CStdString command,CStdString curDir)
 
 BOOL CControlSocket::SendDir(const CStdString command,CStdString curDir,const CStdString prompt)
 {
-  if (1 /*g_settings.m_bFTPSingleCharDrives*/
-    && (curDir.GetLength() >= 2) 
-    && (curDir[0] == '/') && isalpha(curDir[1]) && ((curDir.GetLength() == 2) || (curDir[2] == ':')))
-  {
-    // modified to be consistent with other xbox ftp behavior: drive 
-    // name is a single character without the ':' at the end
-    if (curDir.GetLength() > 3) 
-      curDir = curDir.Left(2).ToUpper() + curDir.Mid(3);
-    else
-      curDir = curDir.Left(2).ToUpper();
-  }
-
   CStdString str;
   str.Format("%s \"%s\"%s", command, curDir, prompt);
 	return Send(str);
@@ -1069,26 +1057,25 @@ void CControlSocket::ParseCommand()
 
 						CStdString dirToList = iter->dir;
 
-						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
+						if (CIoSupport::IsDrivePath(dirToList.c_str()))
 						{
-							char drive = tolower(iter->dir[0]);
+							char szDriveName[MAX_PATH];
+							CIoSupport::GetDriveNameFromPath(dirToList.c_str(), szDriveName);
 
-							// extended partitions and memory units - check if the drive is available
-							if (strchr("abfghirsvw", drive) && !CIoSupport::DriveExists(drive) && !g_memoryUnitManager.IsDriveValid(drive))
+							if (!CIoSupport::DriveExists(szDriveName) && !g_memoryUnitManager.IsDriveValid(szDriveName))
 								continue;
 
 							// don't show x, y, z in the listing as users shouldn't really be
 							// stuffing around with these drives (power users can always go
 							// to these folders by specifying the path directly)
-							if (drive >= 'x' && !g_advancedSettings.m_FTPShowCache)
-								continue;
-
-							if (1 /*g_settings.m_bFTPSingleCharDrives*/)
+							if (!g_advancedSettings.m_FTPShowCache)
 							{
-								// modified to be consistent with other xbox ftp behavior: drive 
-								// name is a single character without the ':' at the end
-								dirToList = drive;
-								dirToList.MakeUpper();
+								if (CIoSupport::CompareString("HDD0-X", szDriveName, true))
+									continue;
+								if (CIoSupport::CompareString("HDD0-Y", szDriveName, true))
+									continue;
+								if (CIoSupport::CompareString("HDD0-Z", szDriveName, true))
+									continue;
 							}
 						}
 
@@ -1832,18 +1819,7 @@ void CControlSocket::ParseCommand()
 							pCurrent->pNext=NULL;
 						}
 
-            if (1 /*g_settings.m_bFTPSingleCharDrives*/
-              && (iter->dir.GetLength() == 3) 
-              && isalpha(iter->dir[0]) && (iter->dir[1] == ':') && (iter->dir[2] == '\\'))
-            {
-              // modified to be consistent with other xbox ftp behavior: drive 
-              // name is a single character without the ':' at the end
-              result=iter->dir[0];
-            }
-            else
-            {
 						result=iter->dir;
-            }
 						result+="\r\n";
 
 						strcpy(pCurrent->buffer, result);

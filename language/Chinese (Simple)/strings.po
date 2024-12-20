@@ -1561,6 +1561,10 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr "改机芯片"
 
+msgctxt "#472"
+msgid "I2C Address"
+msgstr "I2C Address"
+
 msgctxt "#474"
 msgid "Off"
 msgstr "关"
@@ -7214,8 +7218,8 @@ msgid "New smart playlist..."
 msgstr "新的智能播放列表..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "%c磁盘"
+msgid "%s Drive"
+msgstr "%s磁盘"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"

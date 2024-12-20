@@ -600,7 +600,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 #ifdef _LINUX
       if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
 #else
-      if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+	  if (!(URIUtils::IsDOSPath(strFilename))) //Filename not fully qualified
 #endif
       {
         if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath))
@@ -636,7 +636,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 #ifdef _LINUX
       if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
 #else
-      if (strFilename[1] == ':') // already fully qualified
+	  if (URIUtils::IsDOSPath(strFilename)) // already fully qualified
 #endif
         return;
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
@@ -1398,9 +1398,9 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   CStdString strBasePath, strFileName;
 
   // We need to check whether we must use forward (ie. special://)
-  // or backslashes (ie. Q:\)
+  // or backslashes (ie. ROOT:\)
   CStdString sep;
-  if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\')>=0)
+  if (URIUtils::IsDOSPath(strFileNameAndPath) || strFileNameAndPath.Find('\\')>=0)
   {
     strFileNameAndPath.Replace('/', '\\');
     sep="\\";
@@ -2020,7 +2020,7 @@ void CUtil::PlayDVD()
   else
   {
     CIoSupport::Dismount("Cdrom0");
-    CIoSupport::RemapDriveLetter('D', "Cdrom0");
+    CIoSupport::RemapDriveLetter("DVD-ROM", "Cdrom0");
     CFileItem item("dvd://1", false);
     item.SetLabel(CDetectDVDMedia::GetDVDLabel());
     g_application.PlayFile(item);
@@ -3920,7 +3920,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
     strcpy(szPath, szNewPath.c_str());
   }
   
-  if (strncmp(szPath, "Q:", 2) == 0)
+  if (strncmp(szPath, "ROOT:", 5) == 0)
   { // may aswell support the virtual drive as well...
     CStdString strPath;
     // home dir is xbe dir
@@ -3950,10 +3950,10 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
       char szDevicePath[1024];
       char szXbePath[1024];
 
-      CIoSupport::GetPartition(szDrive[0], szDevicePath);
+      CIoSupport::GetPartition(szDrive, szDevicePath);
 
       strcat(szDevicePath, szDirectory);
-      wsprintf(szXbePath, "d:\\%s", szXbe);
+      wsprintf(szXbePath, "DVD-ROM:\\%s", szXbe);
 
 #ifdef HAS_XBOX_HARDWARE
       g_application.Stop(false);
@@ -3973,7 +3973,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   CLog::Log(LOGINFO, " mount %s as D:", strPath.c_str());
 
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('D', const_cast<char*>(strPath.c_str()));
+  CIoSupport::RemapDriveLetter("DVD-ROM", const_cast<char*>(strPath.c_str()));
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
@@ -3999,7 +3999,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     pData->magic = CUSTOM_LAUNCH_MAGIC;
     const char* xbe = szXbe+3;
     CLog::Log(LOGINFO, "launching game %s from path %s", pData->szFilename, strPath.c_str());
-    CIoSupport::UnmapDriveLetter('D');
+    CIoSupport::UnmapDriveLetter("DVD-ROM");
     XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+strPath).c_str(), LDT_TITLE, dwTitleID, pData);
   }
   else

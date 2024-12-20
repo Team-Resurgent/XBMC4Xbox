@@ -108,7 +108,7 @@ void CSettings::Initialize()
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
   // This shouldn't be set here but in CApp::Create!!!!!
-//  m_logFolder = "Q:\\";              // log file location
+//  m_logFolder = "ROOT:\\";              // log file location
   m_logFolder = "";
 
   // defaults for scanning
@@ -161,16 +161,22 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
 #ifdef _XBOX
-  char szDevicePath[1024];
   CStdString strMnt = _P(GetProfileUserDataFolder());
-  if (strMnt.Left(2).Equals("Q:"))
+  if (strMnt.Left(5).Equals("ROOT:"))
   {
     CUtil::GetHomePath(strMnt);
-    strMnt += _P(GetProfileUserDataFolder()).substr(2);
+    strMnt += _P(GetProfileUserDataFolder()).substr(5);
   }
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P', szDevicePath);
+  //TODO: Make this a function
+  char szDriveName[1024];
+  char szParttiion[1024];
+  char szDrivePath[1024];
+  char szPath[1024];
+  CIoSupport::GetDriveNameFromPath(strMnt.c_str(), szDriveName);
+  CIoSupport::GetPartition(szDriveName, szParttiion); 
+  CIoSupport::GetPathFromDevicePath(strMnt.c_str(), szDrivePath);
+  sprintf(szPath, "%s%s", szParttiion, szDrivePath);
+  CIoSupport::RemapDriveLetter("PROFILE", szPath);
 #endif
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
@@ -259,7 +265,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   char szTemp[1024];
   char *pReplace, *pReplace2;
 
-  CStdString strHomePath = "Q:";
+  CStdString strHomePath = "ROOT:";
   strcpy(szText, strText.c_str());
 
   pReplace = strstr(szText, "$HOME");
@@ -825,7 +831,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // setup logging...
   if (g_guiSettings.GetBool("debug.showloginfo"))
   {
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+	g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
   }
@@ -1993,7 +1999,7 @@ CStdString CSettings::GetProfilesThumbFolder() const
 
 CStdString CSettings::GetFFmpegDllFolder() const
 {
-  CStdString folder = "Q:\\system\\players\\dvdplayer\\";
+  CStdString folder = "ROOT:\\system\\players\\dvdplayer\\";
   if (g_guiSettings.GetBool("videoplayer.allcodecs"))
     folder += "full\\";
   return folder;

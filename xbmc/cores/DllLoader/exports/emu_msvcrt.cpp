@@ -112,9 +112,9 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv("PYTHONPATH=Q:\\system\\python\\python27.zlib;Q:\\system\\python\\DLLs;Q:\\system\\python\\Lib;Q:\\system\\python\\spyce");
-  dll_putenv("PYTHONHOME=Q:\\system\\python");
-  dll_putenv("PATH=.;Q:\\;Q:\\system\\python");
+  dll_putenv("PYTHONPATH=;ROOT:\\system\\python\\python27.zlib;ROOT:\\system\\python\\DLLs;ROOT:\\system\\python\\Lib;ROOT:\\system\\python\\spyce");
+  dll_putenv("PYTHONHOME=;ROOT:\\system\\python");
+  dll_putenv("PATH=.;ROOT:\\;;ROOT:\\system\\python");
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
@@ -148,6 +148,7 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
+//TODO: fix this
 bool emu_is_hd(const char* path)
 {
   if (path[0] != 0 && path[1] == ':')
@@ -1494,7 +1495,7 @@ extern "C"
   char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"Q:";
+    return (char*)"ROOT:";
   }
 
   int dll_putenv(const char* envstring)

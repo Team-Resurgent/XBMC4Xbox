@@ -1601,6 +1601,10 @@ msgctxt "#471"
 msgid "Modchip"
 msgstr "Modchip"
 
+msgctxt "#472"
+msgid "I2C Address"
+msgstr "I2C Address"
+
 msgctxt "#474"
 msgid "Off"
 msgstr "Désactivé"
@@ -7382,8 +7386,8 @@ msgid "New smart playlist..."
 msgstr "Nouvelle smart-playlist..."
 
 msgctxt "#21438"
-msgid "%c Drive"
-msgstr "Disque %c"
+msgid "%s Drive"
+msgstr "Disque %s"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
