@@ -354,7 +354,7 @@ void CAladdinLCDSPI2PAR::writeValue(unsigned char value)
 		_outp(ALADDIN_REGISTER_DISP_O, spi);
 		wait_us(0x1);
 
-		value = value << 1;
+		value = ((value << 1) & 0xFF);
 		i--;
 	}
 	while (i > 0);

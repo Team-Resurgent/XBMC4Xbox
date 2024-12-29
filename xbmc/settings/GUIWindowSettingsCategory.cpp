@@ -1194,7 +1194,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE);
+      if (pControl) pControl->SetEnabled(true);
     }
 	else if (strSetting.Equals("lcd.i2caddress"))
     {
