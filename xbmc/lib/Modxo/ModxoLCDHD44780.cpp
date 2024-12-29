@@ -1,87 +1,74 @@
 
-#include "xboxlcd.h"
+#include "ModxoLCDHD44780.h"
 #include "conio.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "undocumented.h"
 
-#define XBOX_SCROLL_SPEED_IN_MSEC 250
-#define XBOX_LCD_COMMAND_MODE 0x80
-#define XBOX_LCD_DATA_MODE 0x40
+#define MODXO_SCROLL_SPEED_IN_MSEC 250
+#define MODXO_LCD_COMMAND_MODE 0x80
+#define MODXO_LCD_DATA_MODE 0x40
+
+#define MODXO_REGISTER_LCD_COMMAND 0xDEA8
+#define MODXO_REGISTER_LCD_DATA 0xDEA9
+
+#define MODXO_LCD_SPI 0x00
+#define MODXO_LCD_I2C 0x01
+#define MODXO_LCD_REMOVE_I2C_PREFIX 2
+#define MODXO_LCD_SET_I2C_PREFIX 3
+#define MODXO_LCD_SET_CLK 4
+#define MODXO_LCD_SET_SPI_MODE 5
 
 //*************************************************************************************************************
-CXboxLCD::CXboxLCD()
+CModxoLCDHD44780::CModxoLCDHD44780()
 {
   m_iActualpos=0;
   m_iRows    = 4;
   m_iColumns = 20;        // display rows each line
   m_iBackLight=32;
-  m_iContrast=50;  
+  m_iContrast=50; 
   m_iI2CAddress=0;
-
-  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
-  {
-    // Special case: it's the KS0073
-    m_iRow1adr = 0x00;
-    m_iRow2adr = 0x20;
-    m_iRow3adr = 0x40;
-    m_iRow4adr = 0x60;
-  }
-  else
-  {
-    // We assume that it's a HD44780 compatible
-    m_iRow1adr = 0x00;
-    m_iRow2adr = 0x40;
-    m_iRow3adr = 0x14;
-    m_iRow4adr = 0x54;
-  }
 }
 
 //*************************************************************************************************************
-CXboxLCD::~CXboxLCD()
+CModxoLCDHD44780::~CModxoLCDHD44780()
 {
 }
 
 //*************************************************************************************************************
-void CXboxLCD::Initialize()
+void CModxoLCDHD44780::Initialize()
 {
   StopThread();
-  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
-  {
-    CLog::Log(LOGINFO, "lcd not used");
-    return;
-  }
   ILCD::Initialize();
   Create();
   
 }
-void CXboxLCD::SetBackLight(int iLight)
+void CModxoLCDHD44780::SetBackLight(int iLight)
 {
   m_iBackLight=iLight;
 }
-void CXboxLCD::SetContrast(int iContrast)
+void CModxoLCDHD44780::SetContrast(int iContrast)
 {
-  m_iContrast=iContrast;
+	if (iContrast<0) iContrast=0;
+	if (iContrast>100) iContrast=100;
+	m_iContrast=iContrast;
 }
 
 //*************************************************************************************************************
-void CXboxLCD::Stop()
+void CModxoLCDHD44780::Stop()
 {
-  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) return;
   StopThread();
 }
 
 //*************************************************************************************************************
-void CXboxLCD::SetLine(int iLine, const CStdString& strLine)
+void CModxoLCDHD44780::SetLine(int iLine, const CStdString& strLine)
 {
-	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
-		return;
 	if (iLine < 0 || iLine >= (int)m_iRows) 
 		return;
 
 	CStdString strLineLong=strLine;
 	//strLineLong.Trim();
-	StringToLCDCharSet(strLineLong);
+	StringToLCDCharSet(LCD_TYPE_HD44780, strLineLong);
 
 	while (strLineLong.size() < m_iColumns) 
 		strLineLong+=" ";
@@ -98,31 +85,17 @@ void CXboxLCD::SetLine(int iLine, const CStdString& strLine)
 // wait_us: delay routine
 // Input: (wait in ~us)
 //************************************************************************************************************************
-void CXboxLCD::wait_us(unsigned int value) 
+void CModxoLCDHD44780::wait_us(unsigned int value) 
 {
-	// 1 us = 1000msec
-	int iValue = value / 30;
-	if (iValue>10) 
-		iValue = 10;
-	if (iValue) 
-		Sleep(iValue);
-}
-
-
-//************************************************************************************************************************
-// DisplayOut: writes command or datas to display
-// Input: (Value to write, token as CMD = Command / DAT = DATAs / INI for switching to 4 bit mode)
-//************************************************************************************************************************
-void CXboxLCD::DisplayOut(unsigned char data, unsigned char command) 
-{
-	int i2c_addresses[] = { 0x27, 0x3c, 0x3d, 0x3f };
-	HalWriteSMBusValue(i2c_addresses[m_iI2CAddress] << 1, command, FALSE, data);
+	unsigned long long timeout = value;
+	timeout *= -10; // 100ns units
+	KeDelayExecutionThread(1, 0, (PLARGE_INTEGER)(&timeout));
 }
 
 //************************************************************************************************************************
 //DisplayBuildCustomChars: load customized characters to character ram of display, resets cursor to pos 0
 //************************************************************************************************************************
-void CXboxLCD::DisplayBuildCustomChars() 
+void CModxoLCDHD44780::DisplayBuildCustomChars() 
 {
 
 }
@@ -132,30 +105,30 @@ void CXboxLCD::DisplayBuildCustomChars()
 // DisplaySetPos: sets cursor position
 // Input: (row position, line number from 0 to 3)
 //************************************************************************************************************************
-void CXboxLCD::DisplaySetPos(unsigned char pos, unsigned char line) 
+void CModxoLCDHD44780::DisplaySetPos(unsigned char pos, unsigned char line) 
 {
-	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
-	{
-		int row_offsets[] = { 0x00, 0x20, 0x40, 0x60 };
-		DisplayOut(0x80 | row_offsets[line] | pos, XBOX_LCD_COMMAND_MODE);
-	}
-	else
-	{
-		int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
-		DisplayOut(0x80 | row_offsets[line] | pos, XBOX_LCD_COMMAND_MODE);
-	}
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_COMMAND_MODE);
+
+	int row_offsets[] = { 0x00, 0x20, 0x40, 0x60 };
+	uint8_t cursor = 0x80 | (pos + row_offsets[line]);
+	_outp(MODXO_REGISTER_LCD_DATA, cursor);
 }
 
 //************************************************************************************************************************
 // DisplayWriteFixText: write a fixed text to actual cursor position
 // Input: ("fixed text like")
 //************************************************************************************************************************
-void CXboxLCD::DisplayWriteFixtext(const char *textstring)
+void CModxoLCDHD44780::DisplayWriteFixtext(const char *textstring)
 { 
-  unsigned char  c;
-  while (c = *textstring++) {
-    DisplayOut(c, XBOX_LCD_DATA_MODE);
-  }
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
+
+	unsigned char  c;
+	while (c = *textstring++) 
+	{
+		_outp(MODXO_REGISTER_LCD_DATA, c);
+	}
 } 
 
 
@@ -164,18 +137,21 @@ void CXboxLCD::DisplayWriteFixtext(const char *textstring)
 // Input: (pointer to a 0x00 terminated string)
 //************************************************************************************************************************
 
-void CXboxLCD::DisplayWriteString(char *pointer) 
+void CModxoLCDHD44780::DisplayWriteString(char *pointer) 
 {
-  /* display a normal 0x00 terminated string on the LCD display */
-  unsigned char c;
-  do {
-    c = *pointer;
-    if (c == 0x00)
-      break;
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
 
-    DisplayOut(c, XBOX_LCD_DATA_MODE);
-    *pointer++;
-    } while(1);
+	/* display a normal 0x00 terminated string on the LCD display */
+	unsigned char c;
+	do {
+		c = *pointer;
+		if (c == 0x00)
+		break;
+
+		_outp(MODXO_REGISTER_LCD_DATA, c);
+		*pointer++;
+	} while(1);
 }		
 
 
@@ -183,15 +159,18 @@ void CXboxLCD::DisplayWriteString(char *pointer)
 // DisplayClearChars:  clears a number of chars in a line and resets cursor position to it's startposition
 // Input: (Startposition of clear in row, row number, number of chars to clear)
 //************************************************************************************************************************
-void CXboxLCD::DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) 
+void CModxoLCDHD44780::DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) 
 {
-  int i;
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
 
-  DisplaySetPos(startpos,line);
-  for (i=0;i<lenght; i++){
-    DisplayOut(0x20, XBOX_LCD_DATA_MODE);
-  }
-  DisplaySetPos(startpos,line);
+	int i;
+
+	DisplaySetPos(startpos,line);
+	for (i=0;i<lenght; i++){
+		_outp(MODXO_REGISTER_LCD_DATA, 0x20);
+	}
+	DisplaySetPos(startpos,line);
 }
 
 
@@ -199,108 +178,111 @@ void CXboxLCD::DisplayClearChars(unsigned char startpos , unsigned char line, un
 // DisplayProgressBar: shows a grafic bar staring at actual cursor position
 // Input: (percent of bar to display, lenght of whole bar in chars when 100 %)
 //************************************************************************************************************************
-void CXboxLCD::DisplayProgressBar(unsigned char percent, unsigned char charcnt) 
+void CModxoLCDHD44780::DisplayProgressBar(unsigned char percent, unsigned char charcnt) 
 {
 
 }
 //************************************************************************************************************************
 //Set brightness level 
 //************************************************************************************************************************
-void CXboxLCD::DisplaySetBacklight(unsigned char level) 
+void CModxoLCDHD44780::DisplaySetBacklight(unsigned char level) 
 {
-  if (level<0) level=0;
-  if (level>100) level=100;
-  //m_xenium.SetBacklight(level/4);
+	if (level<0) level=0;
+	if (level>100) level=100;
 }
 //************************************************************************************************************************
 //Set Contrast level
 //************************************************************************************************************************
-void CXboxLCD::DisplaySetContrast(unsigned char level)
+void CModxoLCDHD44780::DisplaySetContrast(unsigned char level)
 {
 	if (level<0) level=0;
 	if (level>100) level=100;
-	DisplayOut(0x2A, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x79, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x81, XBOX_LCD_COMMAND_MODE);
-	DisplayOut((unsigned char)(level * 2.55f), XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x78, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x28, XBOX_LCD_COMMAND_MODE);
+
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_COMMAND_MODE);
+
+	_outp(MODXO_REGISTER_LCD_DATA, 0x2A);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x79);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x81);
+	_outp(MODXO_REGISTER_LCD_DATA, (unsigned char)(level * 2.55f));
+	_outp(MODXO_REGISTER_LCD_DATA, 0x78);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x28);
 }
 //************************************************************************************************************************
-void CXboxLCD::DisplayInit()
+void CModxoLCDHD44780::DisplayInit()
 {
-	DisplayOut(0x2a, XBOX_LCD_COMMAND_MODE);  // function set (extended command set)
-	DisplayOut(0x71, XBOX_LCD_COMMAND_MODE);  // function selection A, disable internal Vdd regualtor
+	int contrast = g_guiSettings.GetInt("lcd.contrast");
+	if (contrast<0) contrast=0;
+	if (contrast>100) contrast=100;
 
-	DisplayOut(0x00, XBOX_LCD_DATA_MODE);
+	int i2c_addresses[] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f };
+	uint8_t address = i2c_addresses[m_iI2CAddress];
 
-	DisplayOut(0x28, XBOX_LCD_COMMAND_MODE);  // function set (fundamental command set)
-	DisplayOut(0x08, XBOX_LCD_COMMAND_MODE);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_CLK);
+	_outp(MODXO_REGISTER_LCD_COMMAND, 100);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_I2C);
+	_outp(MODXO_REGISTER_LCD_COMMAND, address);
 
-	//Set display clock devide ratio, oscillator freq
-	DisplayOut(0x2a, XBOX_LCD_COMMAND_MODE); //RE=1
-	DisplayOut(0x79, XBOX_LCD_COMMAND_MODE); //SD=1
-	DisplayOut(0xd5, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x70, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x78, XBOX_LCD_COMMAND_MODE); //SD=0
-	DisplayOut(0x08 | 0x01, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x06, XBOX_LCD_COMMAND_MODE);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_COMMAND_MODE);
 
-	//CGROM/CGRAM Management
-	DisplayOut(0x72, XBOX_LCD_COMMAND_MODE);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x2a);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x71);
 
-	DisplayOut(0x00, XBOX_LCD_DATA_MODE);    //ROM A
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
+
+	_outp(MODXO_REGISTER_LCD_DATA, 0x00);
+
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_COMMAND_MODE);
+
+	_outp(MODXO_REGISTER_LCD_DATA, 0x28);  
+	_outp(MODXO_REGISTER_LCD_DATA, 0x08);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x2a); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0x79); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0xd5);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x70);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x78);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x08 | 0x01); //0x01 is 3-4 rows
+	_outp(MODXO_REGISTER_LCD_DATA, 0x06);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x72);
+
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
+
+	_outp(MODXO_REGISTER_LCD_DATA, 0x00);
+
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_COMMAND_MODE);
 	
-	//Set OLED Characterization
-	DisplayOut(0x2a, XBOX_LCD_COMMAND_MODE); //RE=1
-	DisplayOut(0x79, XBOX_LCD_COMMAND_MODE); //SD=1
-	
-	//Set SEG pins Hardware configuration
-	DisplayOut(0xda, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x10, XBOX_LCD_COMMAND_MODE);
-
-	DisplayOut(0xdc, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x00, XBOX_LCD_COMMAND_MODE);
-
-	//Set contrast control
-	DisplayOut(0x81, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0x7f, XBOX_LCD_COMMAND_MODE);
-
-	//Set precharge period
-	DisplayOut(0xd9, XBOX_LCD_COMMAND_MODE);
-	DisplayOut(0xf1, XBOX_LCD_COMMAND_MODE);
-
-	//Set VCOMH Deselect level
-	DisplayOut(0xdb, XBOX_LCD_COMMAND_MODE); 
-	DisplayOut(0x40, XBOX_LCD_COMMAND_MODE);
-
-	//Exiting Set OLED Characterization
-	DisplayOut(0x78, XBOX_LCD_COMMAND_MODE); //SD=0
-	DisplayOut(0x28, XBOX_LCD_COMMAND_MODE); //RE=0, IS=0
-
-	//Clear display
-	DisplayOut(0x01, XBOX_LCD_COMMAND_MODE);
-
-	//Set DDRAM Address
-	DisplayOut(0x80, XBOX_LCD_COMMAND_MODE);
-
-	DisplayOut(0x08 | 0x04, XBOX_LCD_COMMAND_MODE);
-
-	SetContrast(m_iContrast);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x2a); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0x79); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0xda);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x10);
+	_outp(MODXO_REGISTER_LCD_DATA, 0xdc);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x00);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x81);
+	_outp(MODXO_REGISTER_LCD_DATA, (unsigned char)(contrast * 2.55f));
+	_outp(MODXO_REGISTER_LCD_DATA, 0xd9);
+	_outp(MODXO_REGISTER_LCD_DATA, 0xf1);
+	_outp(MODXO_REGISTER_LCD_DATA, 0xdb); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0x40);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x78); 
+	_outp(MODXO_REGISTER_LCD_DATA, 0x28);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x01);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x80);
+	_outp(MODXO_REGISTER_LCD_DATA, 0x08 | 0x04);
 }
 
 //************************************************************************************************************************
-void CXboxLCD::Process()
+void CModxoLCDHD44780::Process()
 {
   int iOldLight=-1;
   int iOldContrast=-1;
 
   m_iColumns = g_advancedSettings.m_lcdColumns;
   m_iRows    = g_advancedSettings.m_lcdRows;
-  m_iRow1adr = g_advancedSettings.m_lcdAddress1;
-  m_iRow2adr = g_advancedSettings.m_lcdAddress2;
-  m_iRow3adr = g_advancedSettings.m_lcdAddress3;
-  m_iRow4adr = g_advancedSettings.m_lcdAddress4;
   m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
   m_iContrast = g_guiSettings.GetInt("lcd.contrast");
   m_iI2CAddress = g_guiSettings.GetInt("lcd.i2caddress");
@@ -309,7 +291,7 @@ void CXboxLCD::Process()
   DisplayInit();
   while (!m_bStop)
   {
-    Sleep(XBOX_SCROLL_SPEED_IN_MSEC);
+    Sleep(MODXO_SCROLL_SPEED_IN_MSEC);
     if (m_iBackLight != iOldLight)
     {
       // backlight setting changed
@@ -366,5 +348,5 @@ void CXboxLCD::Process()
   {
     DisplayClearChars(0,i,m_iColumns);
   }
-  DisplayOut(0x08, XBOX_LCD_COMMAND_MODE);
+  _outp(MODXO_LCD_COMMAND_MODE, 0x08);
 }

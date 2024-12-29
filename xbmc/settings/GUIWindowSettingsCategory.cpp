@@ -511,43 +511,44 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("lcd.type"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-      pControl->AddLabel("LCD - HD44780", LCD_TYPE_LCD_HD44780);
-      pControl->AddLabel("LCD - KS0073", LCD_TYPE_LCD_KS0073);
-      pControl->AddLabel("VFD", LCD_TYPE_VFD);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("lcd.modchip"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("SmartXX", MODCHIP_SMARTXX);
+      pControl->AddLabel("None", MODCHIP_NONE);
+	  pControl->AddLabel("SmartXX (HD44780)", MODCHIP_SMARTXX_HD44780);
+	  pControl->AddLabel("SmartXX (KS0073)", MODCHIP_SMARTXX_KS0073);
+	  pControl->AddLabel("SmartXX (VFD HD44780)", MODCHIP_SMARTXX_VFD_HD44780);
+	  pControl->AddLabel("SmartXX (VFD KS0073)", MODCHIP_SMARTXX_VFD_KS0073);
       pControl->AddLabel("Xenium", MODCHIP_XENIUM);
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
-	  pControl->AddLabel("Modxo", MODCHIP_MODXO);
+	  pControl->AddLabel("Modxo (HD44780)", MODCHIP_MODXO_HD44780);
+  	  pControl->AddLabel("Modxo (LCDXXXX)", MODCHIP_MODXO_LCDXXXX);
+	  pControl->AddLabel("Modxo (SPI2PAR)", MODCHIP_MODXO_SPI2PAR);
+
 	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
       pControl->SetValue(pSettingInt->GetData());
     }
-	else if (strSetting.Equals("lcd.protocol"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("SPI2PAR", 0);
-      pControl->AddLabel("I2C", 1);
-      pControl->SetValue(pSettingInt->GetData());
-	}
 	else if (strSetting.Equals("lcd.i2caddress"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("0x27", 0);
-      pControl->AddLabel("0x3c", 1);
-      pControl->AddLabel("0x3d", 2);
-      pControl->AddLabel("0x3f", 3);
+      pControl->AddLabel("0x20", 0);
+	  pControl->AddLabel("0x21", 1);
+	  pControl->AddLabel("0x22", 2);
+	  pControl->AddLabel("0x23", 3);
+	  pControl->AddLabel("0x24", 4);
+	  pControl->AddLabel("0x25", 5);
+	  pControl->AddLabel("0x26", 6);
+	  pControl->AddLabel("0x27", 7);
+	  pControl->AddLabel("0x38", 8);
+	  pControl->AddLabel("0x39", 9);
+	  pControl->AddLabel("0x3a", 10);
+	  pControl->AddLabel("0x3b", 11);
+	  pControl->AddLabel("0x3c", 12);
+	  pControl->AddLabel("0x3d", 13);
+	  pControl->AddLabel("0x3e", 14);
+	  pControl->AddLabel("0x3f", 15);
       pControl->SetValue(pSettingInt->GetData());
 	}
     else if (strSetting.Equals("harddisk.aamlevel"))
@@ -1170,7 +1171,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE);
     }
     else if (strSetting.Equals("musiclibrary.scrapersettings"))
     {
@@ -1192,29 +1193,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-	else if (strSetting.Equals("lcd.protocol"))
-    {
-	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
-      {
-		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-        if (pControl) pControl->SetEnabled(iModchip == MODCHIP_MODXO);
-      }
-      else 
-      { 
-        if (pControl) pControl->SetEnabled(false); 
-      }
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE);
     }
 	else if (strSetting.Equals("lcd.i2caddress"))
     {
 	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+	  if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
-        if (pControl) pControl->SetEnabled((iProtocol == PROTOCOL_I2C && iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
+        if (pControl) pControl->SetEnabled((iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
       }
       else 
       { 
@@ -1224,11 +1211,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.backlight"))
     {
 	  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-	  if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+	  if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-		int iProtocol = g_guiSettings.GetInt("lcd.protocol");
-        if (pControl) pControl->SetEnabled((iModchip == MODCHIP_MODXO && iProtocol == PROTOCOL_SPI2PAR) || (iModchip != MODCHIP_MODXO && iModchip != MODCHIP_XBOX));
+        if (pControl) pControl->SetEnabled(true);
       }
       else 
       { 
@@ -1239,7 +1225,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       // X3 can't control the contrast via software graying out!
-      if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+      if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
         if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
       }
@@ -1530,16 +1516,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
 #ifdef HAS_LCD
-  else if (strSetting.Equals("lcd.type"))
-  {
-    g_lcd->Initialize();
-  }
   else if (strSetting.Equals("lcd.backlight"))
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.i2caddress") || strSetting.Equals("lcd.protocol"))
+  else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.i2caddress"))
   {
+	g_lcd->Initialize();
     g_lcd->Stop();
     CLCDFactory factory;
     delete g_lcd;
