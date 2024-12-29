@@ -341,14 +341,13 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "lcd", 448);
-  AddInt(3, "lcd.modchip", 471, 0, 0, 1, MODCHIP_SMBUS_HD44780, SPIN_CONTROL_TEXT);
-  AddInt(4, "lcd.protocol", 1008, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
-  AddInt(5, "lcd.i2caddress", 472, 0, 0, 1, 15, SPIN_CONTROL_TEXT);
-  AddInt(6, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(7, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddSeparator(8, "lcd.sep1");
-  AddInt(9, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(10, "lcd.enableonpaused", 20312, true);
+  AddInt(1, "lcd.modchip", 471, 0, 0, 1, MODCHIP_SMBUS_HD44780, SPIN_CONTROL_TEXT);
+  AddInt(2, "lcd.i2caddress", 472, 0, 0, 1, 15, SPIN_CONTROL_TEXT);
+  AddInt(3, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(4, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddSeparator(5, "lcd.sep1");
+  AddInt(6, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(7, "lcd.enableonpaused", 20312, true);
 
   AddCategory(4, "debug", 14092);
   AddBool(1, "debug.showloginfo", 20191, false);
