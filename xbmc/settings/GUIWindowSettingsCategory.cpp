@@ -521,12 +521,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
 	  pControl->AddLabel("SmartXX (VFD HD44780)", MODCHIP_SMARTXX_VFD_HD44780);
 	  pControl->AddLabel("SmartXX (VFD KS0073)", MODCHIP_SMARTXX_VFD_KS0073);
       pControl->AddLabel("Xenium", MODCHIP_XENIUM);
-      pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
+      pControl->AddLabel("Xecuter3 (HD44780)", MODCHIP_XECUTER3_HD44780);
+	  pControl->AddLabel("Xecuter3 (KS0073)", MODCHIP_XECUTER3_KS0073);
 	  pControl->AddLabel("Modxo (HD44780)", MODCHIP_MODXO_HD44780);
   	  pControl->AddLabel("Modxo (LCDXXXX)", MODCHIP_MODXO_LCDXXXX);
 	  pControl->AddLabel("Modxo (SPI2PAR)", MODCHIP_MODXO_SPI2PAR);
-
-	  pControl->AddLabel("Xbox", MODCHIP_XBOX);
+	  pControl->AddLabel("Aladdin (SPI2PAR)", MODCHIP_ALADDIN_SPI2PAR);
+	  pControl->AddLabel("SMBUS (HD44780)", MODCHIP_SMBUS_HD44780);
       pControl->SetValue(pSettingInt->GetData());
     }
 	else if (strSetting.Equals("lcd.i2caddress"))
@@ -1201,7 +1202,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 	  if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-        if (pControl) pControl->SetEnabled((iModchip == MODCHIP_MODXO) || iModchip == MODCHIP_XBOX);
+		int enabled = iModchip == MODCHIP_SMBUS_HD44780 || iModchip == MODCHIP_MODXO_LCDXXXX || iModchip == MODCHIP_SMBUS_HD44780;
+        if (pControl) pControl->SetEnabled(enabled);
       }
       else 
       { 
@@ -1214,7 +1216,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 	  if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
 		int iModchip = g_guiSettings.GetInt("lcd.modchip");
-        if (pControl) pControl->SetEnabled(true);
+		int enabled = iModchip == MODCHIP_SMARTXX_VFD_HD44780 || 
+			iModchip == MODCHIP_SMARTXX_VFD_KS0073 || 
+			iModchip == MODCHIP_XENIUM ||
+			iModchip == MODCHIP_XECUTER3_HD44780 ||
+			iModchip == MODCHIP_XECUTER3_KS0073 ||
+			iModchip == MODCHIP_MODXO_SPI2PAR ||
+			iModchip == MODCHIP_ALADDIN_SPI2PAR;
+        if (pControl) pControl->SetEnabled(enabled);
       }
       else 
       { 
@@ -1224,10 +1233,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.contrast"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // X3 can't control the contrast via software graying out!
       if(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_NONE)
       {
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
+		int iModchip = g_guiSettings.GetInt("lcd.modchip");
+		int enabled = iModchip == MODCHIP_SMARTXX_HD44780 || 
+			iModchip == MODCHIP_SMARTXX_KS0073 || 
+			iModchip == MODCHIP_XENIUM ||
+			iModchip == MODCHIP_MODXO_HD44780 ||
+			iModchip == MODCHIP_MODXO_SPI2PAR ||
+			iModchip == MODCHIP_ALADDIN_SPI2PAR ||
+			iModchip == MODCHIP_SMBUS_HD44780;
+		if (pControl) pControl->SetEnabled(enabled);
       }
       else 
       { 

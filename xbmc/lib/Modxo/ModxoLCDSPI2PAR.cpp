@@ -134,10 +134,10 @@ void CModxoLCDSPI2PAR::DisplayBuildCustomChars()
 //************************************************************************************************************************
 void CModxoLCDSPI2PAR::DisplaySetPos(unsigned char pos, unsigned char line) 
 {
-	utils::ioOutputByte(MODXO_REGISTER_LCD_DATA, SPI2PAR_SETCURSORPOSITION); 
-	utils::ioOutputByte(MODXO_REGISTER_LCD_DATA, pos); 
-	utils::ioOutputByte(MODXO_REGISTER_LCD_DATA, line);
-	utils::uSleep(2000);
+	_outp(MODXO_REGISTER_LCD_DATA, SPI2PAR_SETCURSORPOSITION); 
+	_outp(MODXO_REGISTER_LCD_DATA, pos); 
+	_outp(MODXO_REGISTER_LCD_DATA, line);
+	wait_us(2000);
 }
 
 //************************************************************************************************************************
@@ -146,8 +146,8 @@ void CModxoLCDSPI2PAR::DisplaySetPos(unsigned char pos, unsigned char line)
 //************************************************************************************************************************
 void CModxoLCDSPI2PAR::DisplayWriteFixtext(const char *textstring)
 { 
-	DisplayOut(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
-	DisplayOut(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_SET_I2C_PREFIX);
+	_outp(MODXO_REGISTER_LCD_COMMAND, MODXO_LCD_DATA_MODE);
 
 	unsigned char  c;
 	while (c = *textstring++) 

@@ -341,7 +341,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "lcd", 448);
-  AddInt(3, "lcd.modchip", 471, 0, 0, 1, MODCHIP_XBOX, SPIN_CONTROL_TEXT);
+  AddInt(3, "lcd.modchip", 471, 0, 0, 1, MODCHIP_SMBUS_HD44780, SPIN_CONTROL_TEXT);
   AddInt(4, "lcd.protocol", 1008, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
   AddInt(5, "lcd.i2caddress", 472, 0, 0, 1, 15, SPIN_CONTROL_TEXT);
   AddInt(6, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);

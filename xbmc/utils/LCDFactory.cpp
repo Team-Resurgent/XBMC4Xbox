@@ -2,11 +2,12 @@
 #include "LCDFactory.h"
 #include "lib/SmartXX/SmartXXLCD.h"
 #include "lib/libXenium/XeniumLCD.h"
-#include "lib/X3LCD/X3LCD.h"
+#include "lib/X3/X3LCD.h"
 #include "lib/Modxo/ModxoLCDHD44780.h"
 #include "lib/Modxo/ModxoLCDXXXX.h"
 #include "lib/Modxo/ModxoLCDSPI2PAR.h"
 #include "lib/SMBUS/SMBUSLCDHD44780.h"
+#include "lib/Aladdin/AladdinLCDSPI2PAR.h"
 #include "settings/GUISettings.h"
 
 ILCD* g_lcd = NULL;
@@ -45,7 +46,7 @@ ILCD* CLCDFactory::Create()
     return new CModxoLCDHD44780();
     break;
   case MODCHIP_MODXO_LCDXXXX:
-    return new CModxoLCDLCDXXXX();
+    return new CModxoLCDXXXX();
     break;
   case MODCHIP_MODXO_SPI2PAR:
     return new CModxoLCDSPI2PAR();
